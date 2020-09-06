@@ -19,12 +19,15 @@ const routes = [
     path: '/Customer',
     component: () => import('layouts/CustomerLayout.vue'),
     children: [      
-      { path: '/Customer', component: () => import('pages/Customer.vue') }, 
-      { path: '/Contract', component: () => import('pages/Contract.vue') },
-      { path: '/ServiceContract', component: () => import('pages/ServiceContract.vue') },
-      { path: '/DeviceCustomer', component: () => import('pages/DeviceCustomer.vue') },
-      { path: '/MonitorDevicesCustomer', component: () => import('pages/MonitorDeviceCustomer.vue') },
-      { path: '/MonitorDevicesBackbone', component: () => import('pages/MonitorDeviceBackbone.vue') }
+      { path: '/User',                      component: () => import('pages/User.vue') },
+      { path: '/Customer',                  component: () => import('pages/Customer.vue') }, 
+      { path: '/Contract',                  component: () => import('pages/Contract.vue') },
+      { path: '/ServiceContract',           component: () => import('pages/ServiceContract.vue') },
+      { path: '/DeviceCustomer',            component: () => import('pages/DeviceCustomer.vue') },
+      { path: '/DeviceBackbone',            component: () => import('pages/DeviceBackbone.vue') },
+      { path: '/SiteBackbone',              component: () => import('pages/SiteBackbone.vue') },      
+      { path: '/MonitorDevicesCustomer',    component: () => import('pages/MonitorDeviceCustomer.vue') },
+      { path: '/MonitorDevicesBackbone',    component: () => import('pages/MonitorDeviceBackbone.vue') }
     ]
   },
 

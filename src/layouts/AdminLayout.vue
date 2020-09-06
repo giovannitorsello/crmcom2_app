@@ -12,9 +12,30 @@
     </q-header>
 
     <q-drawer v-model="left" side="left" overlay behavior="mobile" bordered>
-      <q-btn flat color="primary" label="Logout" @click="logout" />
-      <q-btn flat color="primary" label="Monitor Customer Devices" @click="monitorDevicesCustomer" />
-      <q-btn flat color="primary" label="Monitor Backbone Devices" @click="monitorDevicesBackbone" />
+      
+      <q-list bordered separator>
+        <q-item clickable v-ripple to="/AdminHome">
+          <q-item-section>Home</q-item-section>
+        </q-item>
+        <q-item clickable v-ripple to="/User">
+          <q-item-section>Utenti</q-item-section>
+        </q-item>
+        <q-item clickable v-ripple to="/SiteBackbone">
+          <q-item-section>Siti</q-item-section>
+        </q-item>
+        <q-item clickable v-ripple to="/DeviceBackbone">
+          <q-item-section>Dispositivi del Backbone</q-item-section>
+        </q-item>
+        <q-item clickable v-ripple to="/MonitorDevicesCustomer">
+          <q-item-section>Monitor Dispositivi Cliente</q-item-section>
+        </q-item>
+        <q-item clickable v-ripple to="/MonitorDevicesBackbone">
+          <q-item-section>MonitorDevicesBackbone</q-item-section>
+        </q-item>
+      </q-list>
+      
+      
+      <q-btn flat color="primary" label="Logout" @click="logout" />    
     </q-drawer>
 
     <q-page-container>
@@ -24,9 +45,7 @@
     <q-footer reveal elevated class="bg-grey-8 text-white">
       <q-toolbar>
         <q-toolbar-title>
-          <q-avatar>
-            <img src="https://cdn.quasar.dev/logo/svg/quasar-logo.svg" />
-          </q-avatar>CrmCom2
+          CrmCom2
         </q-toolbar-title>
       </q-toolbar>
     </q-footer>
@@ -41,6 +60,9 @@ export default {
     };
   },
   methods: {
+    users() {
+      this.$router.push("/User");
+    },
     monitorDevicesBackbone() {
        this.$router.push("/MonitorDevicesBackbone");
     },

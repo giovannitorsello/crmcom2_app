@@ -2,7 +2,8 @@ import Vue from 'vue'
 import axios from 'axios'
 
 Vue.prototype.$axios = axios
-const host="10.10.10.119"
+//const host="crmcom2.wifinetcom.net"
+const host="localhost"
 const port="18088"
 const axiosInstance = axios.create({baseURL: 'http://'+host+':'+port});
 
