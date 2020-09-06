@@ -3,7 +3,7 @@
         "id": 1,
         "description": "Cliente",
         "type": "customer",
-        "searchFields": ["firstname", "lastname", "codfis", "company", "vatcode", "email", "phone", "pec"],        
+        "searchFields": ["firstname", "lastname", "codfis", "company", "vatcode", "email", "phone", "pec"],                
         "findByFieldUrl": "/adminarea/find_obj_by_field",
         "UiComponent": "Customer"
     },
@@ -21,7 +21,7 @@
         "type": "contractService",
         "searchFields": ["description"],
         "findByFieldUrl": "/adminarea/find_obj_by_field",
-        "UiComponent": "Service"
+        "UiComponent": "ServiceContract"
     },
     {
         "id": 4,

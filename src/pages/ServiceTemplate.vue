@@ -1,0 +1,294 @@
+<template>
+  <div id="serviceTemplate">
+    <h6 class="h4 text-gray-900 mb-4">Configurazione Modelli di Servizio</h6>
+
+    <img
+      src="/img/actions/new.png"
+      v-on:click="newServiceTemplate()"
+      style="width: 32px; height: 32px;"
+    />
+    <img
+      src="/img/actions/save.png"
+      v-on:click="saveServiceTemplate()"
+      style="width: 32px; height: 32px;"
+    />
+    <img
+      src="/img/actions/delete.png"
+      v-on:click="deleteServiceTemplate()"
+      style="width: 32px; height: 32px;"
+    />
+    <q-form ref="serviceForm" class="q-gutter-md">
+      <div class="row">
+        <div class="col">
+          <q-input label="Descrizione" v-model="selectedServiceTemplate.description" />
+        </div>
+        <div class="col">
+          <q-input label="Unità" v-model="selectedServiceTemplate.unit" />
+        </div>
+        <div class="col">
+          <q-input
+            label="Intervallo fatturazione in giorni"
+            v-model="selectedServiceTemplate.billingPeriod"
+          />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <q-input label="Prezzo" v-model="selectedServiceTemplate.price" />
+        </div>
+        <div class="col">
+          <q-input label="IVA" v-model="selectedServiceTemplate.vat" />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <q-input
+            label="Giorni successivi all'invio fattura a partire dai quali viene prodotto l'avviso"
+            v-model="selectedServiceTemplate.dayinvoicereminder"
+          />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <q-input
+            label="Giorni invio preavviso mancato pagamento"
+            v-model="selectedServiceTemplate.nopaydaysbeforedeactivation"
+          />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <q-input
+            label="Giorni invio preavviso disattivazione dei servizi"
+            v-model="selectedServiceTemplate.dayforexpirationwarning"
+          />
+        </div>
+      </div>
+    </q-form>
+
+    <q-table
+      :data="serviceTemplates"
+      :columns="columnsTableServiceTemplates"
+      :pagination="initialPagination"
+      :filter="txtFilter"      
+    >
+      <template v-slot:top-right>
+        <q-input borderless dense debounce="300" v-model="txtFilter" placeholder="Ricerca">
+          <q-icon slot="append" name="search" />
+        </q-input>
+      </template>
+
+      <template v-slot:header="props">
+        <q-tr :props="props">
+          <q-th auto-width />
+          <q-th v-for="col in props.cols" :key="col.name" :props="props">{{ col.label }}</q-th>
+        </q-tr>
+      </template>
+
+      <template v-slot:body="props">
+        <q-tr :props="props" v-bind:class="props.row.state">
+          <q-td auto-width>
+            <img
+              src="/img/actions/open.png"
+              style="width: 32px; height: 32px; fill:greenyellow;"
+              v-on:click="selectServiceTemplate(props.row)"
+            />
+            <img
+              src="/img/actions/unlocked.png"
+              style="width: 32px; height: 32px; xfill:green;"
+              v-on:click="activateServiceTemplate(props.row)"
+            />
+            <img
+              src="/img/actions/locked.png"
+              style="width: 32px; height: 32px; xfill:red;"
+              v-on:click="suspendServiceTemplate(props.row)"
+            />
+            <img
+              src="/img/actions/delete.png"
+              style="width: 32px; height: 32px; xfill: gray;"
+              v-on:click="deleteServiceTemplate(props.row)"
+            />
+          </q-td>
+          <q-td v-for="col in props.cols" :key="col.name" :props="props">{{ col.value }}</q-td>
+        </q-tr>
+      </template>
+    </q-table>
+  </div>
+</template>
+
+<script lang="js">
+import Vue from 'vue'
+import { mapState } from 'vuex'
+
+export default {  
+  data() {
+      return {
+        selectedServiceTemplate: {},
+        serviceTemplates: [],
+        txtFilter: "",
+        initialPagination: {
+          sortBy: "desc",
+          descending: false,
+          page: 2,
+          rowsPerPage: 5
+        },
+        columnsTableServiceTemplates: [
+          { name: "actions", label: "Azioni" },
+          {
+            name: "description",
+            label: "Descrizione",
+            field: "description",
+            sortable: true
+          },
+          {
+            name: "code",
+            label: "Codice",
+            field: "code",          
+            sortable: true
+          },
+          {
+            name: "unit",
+            label: "Unità",
+            field: "unit",
+            sortable: true
+          },
+          {
+            name: "price",
+            label: "Prezzo",
+            field: "price",
+            sortable: true
+          },
+          {
+            name: "createdAt",
+            label: "Data inserimento",
+            field: "createdAt",
+            sortable: true
+          },
+          {
+            name: "updatedAt",
+            label: "Aggiornato il",
+            field: "updatedAt",
+            sortable: true
+          }
+      ]
+      }
+  },
+  methods: {
+    getServiceTemplateData: function() {
+        console.log("Selected service template");
+        console.log(this.selectedServiceTemplate); 
+        this.getAllServiceTemplates();
+    },
+    getAllServiceTemplates: function() {
+        this.$axios.post('/adminarea/serviceTemplate/getall', {})
+            .then(response => {                             
+                  if (response.data.status === "OK") {                  
+                      this.serviceTemplates = response.data.serviceTemplates; 
+                      console.log(this.serviceTemplates);
+                      this.makeToast(response.data.msg);                       
+                  }                                     
+              })
+              .catch(error => {                              
+                  console.log(error);
+              });
+    },
+    newServiceTemplate: function (){
+      this.selectedServiceTemplate.id=null;
+      this.saveServiceTemplate();
+    },
+    saveServiceTemplate: function (){
+        let relUrl="";
+        if((!this.selectedServiceTemplate.id) || (this.selectedServiceTemplate.id==="")) {
+          relUrl='/adminarea/serviceTemplate/insert'; 
+          this.selectedServiceTemplate.state="active"; //New services starts active
+        }
+        else relUrl='/adminarea/serviceTemplate/update'
+        this.$axios.post(relUrl, {serviceTemplate: this.selectedServiceTemplate})
+            .then(response => {                
+                  if (response.data.status === "OK") {                  
+                      this.selectedServiceTemplate = response.data.serviceTemplate; 
+                      this.$store.commit("changeServiceTemplate",Object.assign({}, this.selectedServiceTemplate));
+                      if(relUrl==='/adminarea/serviceTemplate/insert') this.serviceTemplates.push(this.selectedServiceTemplate);
+                  }                                     
+                  this.makeToast(response.data.msg);
+              })
+              .catch(error => {                              
+                  console.log(error);
+              });
+    },
+    selectServiceTemplate: function (srv) {      
+      this.selectedServiceTemplate=srv;
+      this.$store.commit("changeServiceTemplate",Object.assign({}, this.selectedServiceTemplate));       
+    },
+    deleteServiceTemplate: function (srv) {
+      const isConfirmed = confirm("Confermi la cancellazione?");
+      if(isConfirmed) {
+      const parent=this.$parent;
+      this.$axios.post('/adminarea/serviceTemplate/delete', {serviceTemplate: srv})
+          .then(response => {                
+                if (response.data.status === "OK") {
+                    this.serviceTemplates.forEach((element, index, array) => {
+                      if(element.id===srv.id)  this.serviceTemplates.splice(index,1); 
+                    });              
+                    this.selectedServiceTemplate = {};                        
+                    this.makeToast(response.data.msg);                              
+                }                                     
+            })
+            .catch(error => {                              
+                console.log(error);
+            });
+        }
+    },
+    activateServiceTemplate: function(srv) {
+      srv.state="active";
+      this.$axios.post('/adminarea/serviceTemplate/update', {serviceTemplate: srv})
+        .then(response => {                
+              if (response.data.status === "OK") {                  
+                  this.selectedServiceTemplate = response.data.serviceTemplate;                      
+                  this.makeToast(response.data.msg);                   
+              }                                     
+          })
+          .catch(error => {                              
+              console.log(error);
+          });
+    },
+    suspendServiceTemplate: function(srv) {
+      srv.state="suspended";
+      this.$axios.post('/adminarea/serviceTemplate/update', {serviceTemplate: srv})
+        .then(response => {                
+              if (response.data.status === "OK") {                  
+                  this.selectedServiceTemplate = response.data.serviceTemplate;                      
+                  this.makeToast(response.data.msg);                  
+              }                                     
+          })
+          .catch(error => {                              
+              console.log(error);
+          });
+    },
+    exit: function() {
+      this.$parent.$emit("selectedCustomer");
+    },
+    makeToast(string) {        
+      this.$q.notify({color: 'green-4', textColor: 'white', icon: 'info', message: string});
+    }  
+  },
+  computed: mapState({
+    serviceTemplate: 'serviceTemplate',      
+    }),
+    created() {
+      this.getServiceTemplateData();
+    }
+}
+</script>
+
+<style scoped>
+.active {
+  background-color: rgb(168, 243, 168);
+}
+
+.suspended {
+  background-color: rgb(177, 171, 171);
+}
+</style>

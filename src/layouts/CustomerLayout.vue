@@ -13,6 +13,9 @@
         <q-item clickable v-ripple to="/AdminHome">
           <q-item-section>Home</q-item-section>
         </q-item>
+        <q-item clickable v-ripple to="/ViewData">
+          <q-item-section>Ricerce</q-item-section>
+        </q-item>
         <q-item clickable v-ripple to="/User">
           <q-item-section>Utenti</q-item-section>
         </q-item>

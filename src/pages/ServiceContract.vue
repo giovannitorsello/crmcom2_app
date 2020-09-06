@@ -5,15 +5,22 @@
     <img src="/img/actions/save.png" @click="saveService" style="width: 48px; height: 48px;" />
     <img src="/img/actions/delete.png" @click="deleteService" style="width: 48px; height: 48px;" />
     <img src="/img/actions/exit.png" @click="exit" style="width: 48px; height: 48px;" />
-
-    <q-form ref="contractForm" class="q-gutter-md">
-      
+    <q-form ref="serviceForm" class="q-gutter-md">
       <div class="row">
         <div class="col">
           <q-input label="Descrizione" v-model="selectedService.service_description" />
         </div>
         <div class="col">
+          <q-input label="Codice" v-model="selectedService.code" />
+        </div>
+        <div class="col">
           <q-input label="Unità" v-model="selectedService.unit" />
+        </div>
+        <div class="col">
+          <q-input
+            label="Intervallo fatturazione in giorni"
+            v-model="selectedService.billingPeriod"
+          />
         </div>
       </div>
 
@@ -25,25 +32,32 @@
           <q-input label="IVA" v-model="selectedService.vat" />
         </div>
       </div>
-      
+
       <div class="row">
         <div class="col">
-          <q-input label="Intervallo fatturazione in giorni" v-model="selectedService.billingPeriod"/>
+          <q-input
+            label="Giorni successivi all'invio fattura a partire dai quali viene prodotto l'avviso"
+            v-model="selectedService.dayinvoicereminder"
+          />
         </div>
+      </div>
+      <div class="row">
         <div class="col">
           <q-input
             label="Giorni invio preavviso mancato pagamento"
             v-model="selectedService.nopaydaysbeforedeactivation"
           />
         </div>
+      </div>
+      <div class="row">
         <div class="col">
           <q-input
-            label="Giorni invio preavviso disattivazione"
+            label="Giorni invio preavviso disattivazione dei servizi"
             v-model="selectedService.dayforexpirationwarning"
-        />
+          />
         </div>
       </div>
-    </q-form>
+    </q-form>    
   </div>
 </template>
 

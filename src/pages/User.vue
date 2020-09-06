@@ -49,7 +49,7 @@
       row-key="id"
       virtual-scroll
       :pagination.sync="pagination"
-      :rows-per-page-options="[0]"
+      :rows-per-page-options="[5,10,15]"
       @row-click="openUser"
     >
       <template v-slot:header="props">

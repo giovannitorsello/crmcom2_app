@@ -17,6 +17,12 @@
         <q-item clickable v-ripple to="/AdminHome">
           <q-item-section>Home</q-item-section>
         </q-item>
+        <q-item clickable v-ripple to="/ViewData">
+          <q-item-section>Ricerce</q-item-section>
+        </q-item>
+        <q-item clickable v-ripple to="/ServiceTemplate">
+          <q-item-section>Modelli di Servizio</q-item-section>
+        </q-item>
         <q-item clickable v-ripple to="/User">
           <q-item-section>Utenti</q-item-section>
         </q-item>
@@ -42,13 +48,6 @@
           <router-view />
     </q-page-container>
 
-    <q-footer reveal elevated class="bg-grey-8 text-white">
-      <q-toolbar>
-        <q-toolbar-title>
-          CrmCom2
-        </q-toolbar-title>
-      </q-toolbar>
-    </q-footer>
   </q-layout>
 </template>
 
