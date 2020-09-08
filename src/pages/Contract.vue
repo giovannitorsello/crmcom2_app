@@ -9,21 +9,38 @@
     <img src="/img/actions/delete.png" @click="deleteContract" style="width: 48px; height: 48px;" />
     <img src="/img/actions/exit.png" @click="exit" style="width: 48px; height: 48px;" />
 
+    <ValidationObserver ref="FormDeviceCustomer">
     <q-form ref="contractForm" class="q-gutter-md">
       <div class="row">
         <div class="col">
-          <q-input label="Descrizione" v-model="selectedContract.description" />
-          <q-input label="Indirizzo" v-model="selectedContract.address" />
+          <ValidationProvider name="Descrizione" immediate rules="required|alpha_space" v-slot="{ errors }">
+            <q-input label="Descrizione" v-model="selectedContract.description" />
+            <span class="error">{{ errors[0] }}</span>
+          </ValidationProvider>
+          <ValidationProvider name="Indirizzo" immediate rules="required|address" v-slot="{ errors }">
+            <q-input label="Indirizzo" v-model="selectedContract.address" />
+            <span class="error">{{ errors[0] }}</span>
+          </ValidationProvider>
         </div>
       </div>
       <div class="row">
         <div class="col">
-          <q-input label="Durata" v-model="selectedContract.duration" />
-          <q-checkbox label="Rinnovo Automatico" v-model="selectedContract.automaticRenew" />
-          <q-checkbox label="Da fatturare" v-model="selectedContract.businnessFlag" />
+          <ValidationProvider name="Durata in giorni" immediate rules="required|number" v-slot="{ errors }">
+            <q-input label="Durata in giorni" v-model="selectedContract.duration" />
+            <span class="error">{{ errors[0] }}</span>
+          </ValidationProvider>
+          <ValidationProvider name="Durata in giorni" immediate rules="required" v-slot="{ errors }">          
+            <q-checkbox label="Rinnovo Automatico" v-model="selectedContract.automaticRenew" />
+            <span class="error">{{ errors[0] }}</span>
+          </ValidationProvider>
+          <ValidationProvider name="Durata in giorni" immediate rules="required" v-slot="{ errors }">          
+            <q-checkbox label="Da fatturare" v-model="selectedContract.businnessFlag" />
+             <span class="error">{{ errors[0] }}</span>
+          </ValidationProvider>
         </div>
       </div>
     </q-form>
+    </ValidationObserver>
 
     <div class="row">
       <div class="col">

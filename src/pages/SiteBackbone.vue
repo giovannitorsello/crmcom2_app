@@ -67,27 +67,43 @@
     <img @click="newSiteBackbone()"  src="/img/actions/new.png"  style="width: 64px; height: 64px;" />
     <img @click="saveSiteBackbone()" src="/img/actions/save.png" style="width: 64px; height: 64px;" />
 
-    <q-form ref="userForm" class="q-gutter-md">
+    <ValidationObserver ref="formSite">
+    <q-form ref="siteForm" class="q-gutter-md">
       <div class="row">
         <div class="col">
-          <q-input label="Descrizione" v-model="selectedSiteBackbone.description" />
+          <ValidationProvider name="Descrizione" immediate rules="required|alpha_spaces" v-slot="{ errors }">
+            <q-input label="Descrizione" v-model="selectedSiteBackbone.description" />
+            <span class="error">{{ errors[0] }}</span>
+          </ValidationProvider>
         </div>
         <div class="col">
-          <q-input label="Indirizzo" v-model="selectedSiteBackbone.address" />
+          <ValidationProvider name="Indirizzo" immediate rules="required|address" v-slot="{ errors }">          
+            <q-input label="Indirizzo" v-model="selectedSiteBackbone.address" />
+            <span class="error">{{ errors[0] }}</span>
+          </ValidationProvider>
         </div>
       </div>
       <div class="row">
         <div class="col">
-          <q-input label="Latitude" v-model="selectedSiteBackbone.latitude" />
+          <ValidationProvider name="Latitudine" immediate rules="required|latitude" v-slot="{ errors }">          
+            <q-input label="Latitude" v-model="selectedSiteBackbone.latitude" />
+            <span class="error">{{ errors[0] }}</span>
+          </ValidationProvider>
+
         </div>
         <div class="col">
-          <q-input label="Longitude" v-model="selectedSiteBackbone.longitude" />
+          <ValidationProvider name="Longitudine" immediate rules="required|longitude" v-slot="{ errors }">                    
+            <q-input label="Longitude" v-model="selectedSiteBackbone.longitude" />
+            <span class="error">{{ errors[0] }}</span>
+        </ValidationProvider>
+
         </div>        
       </div>
       <div class="row">
           <q-input label="Note" v-model="selectedSiteBackbone.note" type="textarea" cols="100" rows="5"/>
-        </div>
+      </div>
     </q-form>
+    </ValidationObserver>
 
     <hr class="separator" />
     <div v-if="isConnected">
@@ -121,10 +137,15 @@
 
 <script>
 import D3Network from "vue-d3-network";
+import { mapState } from 'vuex'
+import { ValidationProvider, ValidationObserver, extend, localize } from 'vee-validate';
+import validator from "./validator"
 
 export default {
   components: {
-    D3Network
+    D3Network,
+    ValidationProvider,
+    ValidationObserver
   },
   data() {
     return {
@@ -390,3 +411,10 @@ export default {
 </script>
 
 <style src="vue-d3-network/dist/vue-d3-network.css" scoped></style>
+<style>
+.error {
+  color: rgb(127, 127, 0);
+  background-color: yellow;
+  font-style: italic;
+}
+</style>

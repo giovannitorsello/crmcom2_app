@@ -79,49 +79,80 @@
     />
     <img src="/img/actions/exit.png" @click="exit" style="width: 48px; height: 48px;" />
 
+    <ValidationObserver ref="FormDeviceBackbone">
     <q-form ref="deviceBackboneForm" class="q-gutter-md">
       <div class="row">
         <div class="col">
-          <q-input label="Descrizione" v-model="selectedDeviceBackbone.description" />
+          <ValidationProvider name="Descrizione" immediate rules="required|alpha_spaces" v-slot="{ errors }">
+            <q-input label="Descrizione" v-model="selectedDeviceBackbone.description" />
+            <span class="error">{{ errors[0] }}</span>
+          </ValidationProvider>
         </div>
         <div class="col">
-          <q-input label="Tipo" v-model="selectedDeviceBackbone.type" />
+          <ValidationProvider name="Tipo" immediate rules="required|alpha_spaces" v-slot="{ errors }">
+            <q-input label="Tipo" v-model="selectedDeviceBackbone.type" />
+            <span class="error">{{ errors[0] }}</span>
+          </ValidationProvider>
         </div>
         <div class="col"></div>
         <div class="col">
-          <q-input label="Produttore" v-model="selectedDeviceBackbone.vendor" />
+          <ValidationProvider name="Produttore" immediate rules="required|alpha_spaces" v-slot="{ errors }">
+            <q-input label="Produttore" v-model="selectedDeviceBackbone.vendor" />
+            <span class="error">{{ errors[0] }}</span>
+          </ValidationProvider>
         </div>
         <div class="col">
-          <q-input label="Modello" v-model="selectedDeviceBackbone.model" />
-        </div>
-      </div>
-      <div class="row">
-        <div class="col">
-          <q-input label="MAC" v-model="selectedDeviceBackbone.mac" />
-        </div>
-        <div class="col">
-          <q-input label="ipv4" v-model="selectedDeviceBackbone.ipv4" />
-        </div>
-        <div class="col">
-          <q-input label="ipv6" v-model="selectedDeviceBackbone.ipv6" />
+          <ValidationProvider name="Modello" immediate rules="required|alpha_num" v-slot="{ errors }">
+            <q-input label="Modello" v-model="selectedDeviceBackbone.model" />
+            <span class="error">{{ errors[0] }}</span>
+          </ValidationProvider>
         </div>
       </div>
       <div class="row">
         <div class="col">
-          <q-input
-            label="Note sul dispositivo"
-            v-model="selectedDeviceBackbone.note"
-            type="textarea"
-            rows="5"
-            cols="20"
-          />
+          <ValidationProvider name="Modello" immediate rules="mac" v-slot="{ errors }">
+            <q-input label="MAC" v-model="selectedDeviceBackbone.mac" />
+            <span class="error">{{ errors[0] }}</span>
+          </ValidationProvider>
+        </div>
+        <div class="col">
+          <ValidationProvider name="Modello" immediate rules="required|ipv4" v-slot="{ errors }">
+            <q-input label="ipv4" v-model="selectedDeviceBackbone.ipv4" />
+            <span class="error">{{ errors[0] }}</span>
+          </ValidationProvider>
+        </div>
+        <div class="col">
+          <ValidationProvider name="Modello" immediate rules="ipv6" v-slot="{ errors }">
+            <q-input label="ipv6" v-model="selectedDeviceBackbone.ipv6" />
+          <span class="error">{{ errors[0] }}</span>
+          </ValidationProvider>
+
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <ValidationProvider name="Modello" immediate rules="" v-slot="{ errors }">
+            <q-input
+              label="Note sul dispositivo"
+              v-model="selectedDeviceBackbone.note"
+              type="textarea"
+              rows="5"
+              cols="20"
+            />
+            <span class="error">{{ errors[0] }}</span>
+          </ValidationProvider>
         </div>
       </div>
     </q-form>
+    </ValidationObserver>
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
+import { ValidationProvider, ValidationObserver, extend, localize } from 'vee-validate';
+import validator from "./validator"
+
 export default {
   data() {
     return {
@@ -188,56 +219,22 @@ export default {
       ]
     };
   },
+  components: {
+    ValidationProvider,
+    ValidationObserver
+  },
   computed: {
-    sortOptions() {
-      // Create an options list from our fields
-      return this.fields
-        .filter(f => f.sortable)
-        .map(f => {
-          return { text: f.label, value: f.key };
-        });
-    },
     siteDescription(dev) {
       return this.sitesBackbone[dev.siteBackboneId];
     }
   },
   mounted() {
+    validator.setup();
     this.getAllSitesBackbone();
     this.getAllDevicesBackbone();
     this.totalRows = this.devicesBackbone.length;
     this.selectedSiteBackbone = Object.assign({}, this.$store.state.siteBackbone);
     if (this.selectedSiteBackbone == null) this.selectedSiteBackbone = {};
-  },
-  getSnmpParameters(device) {
-    const oidsObjs = {
-      txRate: "1.3.6.1.4.1.14988.1.1.1.1.1.2.1",
-      rxRate: "1.3.6.1.4.1.14988.1.1.1.1.1.3.1",
-      strength: "1.3.6.1.4.1.14988.1.1.1.1.1.4.1",
-      ssid: "1.3.6.1.4.1.14988.1.1.1.1.1.5.1",
-      frequency: "1.3.6.1.4.1.14988.1.1.1.1.1.7.1",
-      band: "1.3.6.1.4.1.14988.1.1.1.1.1.8.1"
-    };
-
-    const oidsReq = [];
-    for (const key in oidsObjs) {
-      oidsReq.push(oidsObjs[key]);
-    }
-
-    this.$axios
-      .post("/adminarea/deviceBackbone/getSnmpParams", {
-        ip: device.ipv4,
-        oids: oidsReq
-      })
-      .then(response => {
-        if (response.data.status === "OK") {
-          this.snmpParameters = response.data.snmpParameters;
-          this.makeToast(response.data.msg);
-          console.log(this.snmpParameters);
-        }
-      })
-      .catch(error => {
-        console.log(error);
-      });
   },
   methods: {
     monitorDevice(dev) {
@@ -341,8 +338,7 @@ export default {
     },
     openDevice(dev) {
       this.selectedDeviceBackbone = dev;
-      this.$store.commit("changeDeviceBackbone", Object.assign({}, this.selectedDeviceBackbone));
-      this.getSnmpParameters(dev);
+      this.$store.commit("changeDeviceBackbone", Object.assign({}, this.selectedDeviceBackbone));      
     },
     saveDevice() {
       this.$axios
@@ -422,5 +418,11 @@ export default {
 
 .normal {
   background-color: rgb(0, 217, 255);
+}
+
+.error {
+  color: rgb(127, 127, 0);
+  background-color: yellow;
+  font-style: italic;
 }
 </style>

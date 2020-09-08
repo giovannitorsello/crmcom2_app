@@ -5,70 +5,102 @@
     <img src="/img/actions/save.png" @click="saveService" style="width: 48px; height: 48px;" />
     <img src="/img/actions/delete.png" @click="deleteService" style="width: 48px; height: 48px;" />
     <img src="/img/actions/exit.png" @click="exit" style="width: 48px; height: 48px;" />
-    <q-form ref="serviceForm" class="q-gutter-md">
-      <div class="row">
-        <div class="col">
-          <q-input label="Descrizione" v-model="selectedService.service_description" />
+    <ValidationObserver ref="formServiceContract">
+      <q-form ref="serviceForm" class="q-gutter-md">
+        <div class="row">
+          <div class="col">
+            <ValidationProvider name="Descrizione" immediate rules="required|alpha_spaces" v-slot="{ errors }">
+              <q-input label="Descrizione" v-model="selectedServiceTemplate.description" />
+              <span class="error">{{ errors[0] }}</span>
+            </ValidationProvider>
+          </div>
+          <div class="col">
+            <q-input label="Codice" v-model="selectedService.code" />
+          </div>
+          <div class="col">
+            <ValidationProvider name="Unità" immediate rules="required|alpha_spaces" v-slot="{ errors }">          
+              <q-input label="Unità" v-model="selectedServiceTemplate.unit" />
+              <span class="error">{{ errors[0] }}</span>
+            </ValidationProvider>
+          </div>
+          <div class="col">
+            <ValidationProvider name="Intervallo di fatturazione" immediate rules="required|number" v-slot="{ errors }">          
+              <q-input
+                label="Intervallo fatturazione in giorni"
+                v-model="selectedServiceTemplate.billingPeriod"
+              />
+              <span class="error">{{ errors[0] }}</span>
+            </ValidationProvider>
+          </div>
         </div>
-        <div class="col">
-          <q-input label="Codice" v-model="selectedService.code" />
-        </div>
-        <div class="col">
-          <q-input label="Unità" v-model="selectedService.unit" />
-        </div>
-        <div class="col">
-          <q-input
-            label="Intervallo fatturazione in giorni"
-            v-model="selectedService.billingPeriod"
-          />
-        </div>
-      </div>
 
-      <div class="row">
-        <div class="col">
-          <q-input label="Prezzo" v-model="selectedService.price" />
+        <div class="row">
+          <div class="col">
+            <ValidationProvider name="Prezzo" immediate rules="required|number" v-slot="{ errors }">          
+              <q-input label="Prezzo" v-model="selectedServiceTemplate.price" />
+              <span class="error">{{ errors[0] }}</span>
+            </ValidationProvider>
+          </div>
+          <div class="col">
+            <ValidationProvider name="IVA" immediate rules="required|number" v-slot="{ errors }">          
+              <q-input label="IVA" v-model="selectedServiceTemplate.vat" />
+              <span class="error">{{ errors[0] }}</span>
+            </ValidationProvider>
+          </div>
         </div>
-        <div class="col">
-          <q-input label="IVA" v-model="selectedService.vat" />
-        </div>
-      </div>
 
-      <div class="row">
-        <div class="col">
-          <q-input
-            label="Giorni successivi all'invio fattura a partire dai quali viene prodotto l'avviso"
-            v-model="selectedService.dayinvoicereminder"
-          />
+        <div class="row">
+          <div class="col">
+            <ValidationProvider name="G. avviso fattura" immediate rules="required|number" v-slot="{ errors }">          
+              <q-input
+                label="Giorni successivi all'invio fattura a partire dai quali viene prodotto l'avviso"
+                v-model="selectedServiceTemplate.dayinvoicereminder"
+              />
+              <span class="error">{{ errors[0] }}</span>
+            </ValidationProvider>
+          </div>
         </div>
-      </div>
-      <div class="row">
-        <div class="col">
-          <q-input
-            label="Giorni invio preavviso mancato pagamento"
-            v-model="selectedService.nopaydaysbeforedeactivation"
-          />
+        <div class="row">
+          <div class="col">
+            <ValidationProvider name="G. mancato pagamento" immediate rules="required|number" v-slot="{ errors }">          
+              <q-input
+                label="Giorni invio preavviso mancato pagamento"
+                v-model="selectedServiceTemplate.nopaydaysbeforedeactivation"
+              />
+              <span class="error">{{ errors[0] }}</span>
+            </ValidationProvider>
+          </div>
         </div>
-      </div>
-      <div class="row">
-        <div class="col">
-          <q-input
-            label="Giorni invio preavviso disattivazione dei servizi"
-            v-model="selectedService.dayforexpirationwarning"
-          />
+        <div class="row">
+          <div class="col">
+              <ValidationProvider name="G. disatt. servizi" immediate rules="required|number" v-slot="{ errors }">          
+              <q-input
+                label="Giorni invio preavviso disattivazione dei servizi"
+                v-model="selectedServiceTemplate.dayforexpirationwarning"
+              />
+              <span class="error">{{ errors[0] }}</span>
+            </ValidationProvider>
+          </div>
         </div>
-      </div>
-    </q-form>    
+      </q-form>
+    </ValidationObserver>  
   </div>
 </template>
 
 <script lang="js">
 import { mapState } from 'vuex'
+import { ValidationProvider, ValidationObserver, extend, localize } from 'vee-validate';
+import validator from "./validator"
 
 export default {
   data() {
     return {     
         selectedService: {},                       
     }
+  },
+  components: {
+    ValidationProvider,
+    ValidationObserver
   },
   methods: {
       getServiceData: function() {

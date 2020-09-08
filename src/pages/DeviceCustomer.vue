@@ -11,50 +11,75 @@
     <img src="/img/actions/eye.svg"     @click="monitorDevice" style="width: 48px; height: 48px;" v-bind:class="monitorClassBackground"/>
     <img src="/img/actions/exit.png"    @click="exit" style="width: 48px; height: 48px;" />
 
+    <ValidationObserver ref="FormDeviceCustomer">
     <q-form ref="deviceForm" class="q-gutter-md">
       <div class="row">
         <div class="col">
-          <select
-            id="companyasset"
-            name="companyasset"
-            placeorder="Tecnologia utilizzata"
-            v-model="companyasset"
-            class="form-control form-control-user"
-            aria-label="Tecnologia internet"
-            @change="initDeviceProperties"
-          >
-            <option
-              v-for="companyasset in companyassets"
-              v-bind:key="companyasset.id"
-              v-bind:value="companyasset"
-            >{{ companyasset.company }} ({{companyasset.techasset}})</option>
-          </select>
+          <ValidationProvider name="Tecnologia" immediate rules="required" v-slot="{ errors }">
+            <select
+              id="companyasset"
+              name="companyasset"
+              placeorder="Tecnologia utilizzata"
+              v-model="companyasset"
+              class="form-control form-control-user"
+              aria-label="Tecnologia internet"
+              @change="initDeviceProperties"
+            >
+              <option
+                v-for="companyasset in companyassets"
+                v-bind:key="companyasset.id"
+                v-bind:value="companyasset"
+              >{{ companyasset.company }} ({{companyasset.techasset}})</option>
+            </select>
+            <span class="error">{{ errors[0] }}</span>
+          </ValidationProvider>
         </div>
       </div>
       <div class="row">
         <div class="col">
-          <q-input label="Descrizione" v-model="selectedDevice.description" />
+          <ValidationProvider name="Descrizione" immediate rules="required|alpha" v-slot="{ errors }">
+            <q-input label="Descrizione" v-model="selectedDevice.description" />
+            <span class="error">{{ errors[0] }}</span>
+          </ValidationProvider>
         </div>
         <div class="col">
-          <q-input label="Tipo" v-model="selectedDevice.type" />
+          <ValidationProvider name="Tipo" immediate rules="required|alpha" v-slot="{ errors }">
+            <q-input label="Tipo" v-model="selectedDevice.type" />
+            <span class="error">{{ errors[0] }}</span>
+          </ValidationProvider>
         </div>
         <div class="col"></div>
         <div class="col">
-          <q-input label="Produttore" v-model="selectedDevice.vendor" />
+          <ValidationProvider name="Produttore" immediate rules="required|alpha_spaces" v-slot="{ errors }">
+            <q-input label="Produttore" v-model="selectedDevice.vendor" />
+            <span class="error">{{ errors[0] }}</span>
+          </ValidationProvider>
         </div>
         <div class="col">
-          <q-input label="Modello" v-model="selectedDevice.model" />
+          <ValidationProvider name="Modello" immediate rules="required|alpha" v-slot="{ errors }">
+            <q-input label="Modello" v-model="selectedDevice.model" />
+            <span class="error">{{ errors[0] }}</span>
+          </ValidationProvider>          
         </div>
       </div>
       <div class="row">
         <div class="col">
-          <q-input label="MAC" v-model="selectedDevice.mac" />
+          <ValidationProvider name="Tecnologia" immediate rules="mac" v-slot="{ errors }">
+            <q-input label="MAC" v-model="selectedDevice.mac" />
+            <span class="error">{{ errors[0] }}</span>
+          </ValidationProvider>
         </div>
         <div class="col">
-          <q-input label="ipv4" v-model="selectedDevice.ipv4" />
+          <ValidationProvider name="Tecnologia" immediate rules="required|ipv4" v-slot="{ errors }">
+            <q-input label="ipv4" v-model="selectedDevice.ipv4" />
+            <span class="error">{{ errors[0] }}</span>
+          </ValidationProvider>          
         </div>
         <div class="col">
-          <q-input label="ipv6" v-model="selectedDevice.ipv6" />
+          <ValidationProvider name="Tecnologia" immediate rules="ipv6" v-slot="{ errors }">
+            <q-input label="ipv6" v-model="selectedDevice.ipv6" />
+            <span class="error">{{ errors[0] }}</span>
+          </ValidationProvider>          
         </div>
       </div>
       <div class="row">
@@ -69,6 +94,7 @@
         </div>
       </div>
     </q-form>
+    </ValidationObserver>
 
     <hr class="separator" />
     <template v-if="selectedDevice">
@@ -132,6 +158,8 @@
 
 <script lang="js">
 import { mapState } from 'vuex'
+import { ValidationProvider, ValidationObserver, extend, localize } from 'vee-validate';
+import validator from "./validator"
 import companyassetsJson from '../config/companyassets.json'
 
 export default {
@@ -144,6 +172,10 @@ export default {
       objDataSection: {},
       objDataPrimitives: {}                   
     }
+  },
+  components: {
+    ValidationProvider,
+    ValidationObserver
   },
   methods: {
     initDeviceProperties() {

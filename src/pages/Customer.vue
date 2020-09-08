@@ -9,102 +9,171 @@
     <img src="/img/actions/delete.png"  @click="deleteCustomer" style="width: 48px; height: 48px;" />
     <img src="/img/actions/exit.png"    @click="exit" style="width: 48px; height: 48px;" />
 
-
-    <q-form ref="customerForm" class="q-gutter-md">
-      <div class="row">
-        <div class="col">
-          <q-toggle label="Azienda" v-model="isCompany" />
-        </div>
-        <div class="col">
-          <q-checkbox label="Da fatturare" v-model="selectedCustomer.businnessflag" />
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col">
-          <q-input label="Nome" v-model="selectedCustomer.firstname" />
-        </div>
-        <div class="col">
-          <q-input label="Cognome" v-model="selectedCustomer.lastname" />
-        </div>
-        <div class="col">
-          <q-input label="Codice Fiscale" v-model="selectedCustomer.codfis" />
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col">
-          <q-input label="Indirizzo" v-model="selectedCustomer.address" />
-        </div>
-        <div class="col">
-          <q-input label="Cap" v-model="selectedCustomer.postalcode" />
-        </div>
-        <div class="col">
-          <q-input label="Città" v-model="selectedCustomer.city" />
-        </div>
-        <div class="col">
-          <q-input label="Stato" v-model="selectedCustomer.state" />
-        </div>
-      </div>
-
-      <div id="companyFields" v-if="isCompany">
+    <ValidationObserver ref="formCustomer">
+      <q-form ref="customerForm" class="q-gutter-md">
         <div class="row">
           <div class="col">
-            <q-input label="Denominazione Azienda" v-model="selectedCustomer.company" />
+            <q-toggle label="Azienda" v-model="isCompany" />
           </div>
           <div class="col">
-            <q-input label="Indirizzo Azienda" v-model="selectedCustomer.companyaddress" />
-          </div>
-          <div class="col">
-            <q-input label="Telefono aziendale" v-model="selectedCustomer.companyphone" type="tel" />
+            <q-checkbox label="Da fatturare" v-model="selectedCustomer.businnessflag" />
           </div>
         </div>
-        <div class="row">
-          <div class="col">
-            <q-input label="Partita IVA" v-model="selectedCustomer.vatcode" />
-          </div>
-          <div class="col">
-            <q-input label="Codice Univoco SDI" v-model="selectedCustomer.sdicode" />
-          </div>
-          <div class="col">
-            <q-input label="Company PEC" v-model="selectedCustomer.companypec" type="email" />
-          </div>
-        </div>
-      </div>
 
-      <div class="row .offset-md-4">
-        <div class="col">
-          <q-input label="Email" v-model="selectedCustomer.email" type="email" />
-        </div>
-        <div class="col">
-          <q-input label="Tel. Mobile" v-model="selectedCustomer.mobilephone" type="tel" />
-        </div>
-        <div class="col">
-          <q-input label="Tel. Fisso" v-model="selectedCustomer.phone" type="tel" />
-        </div>
-      </div>
-      <div class="row">
-        <div class="col">
-          <q-input label="Nome Utente" v-model="selectedCustomer.username" />
-        </div>
-        <div class="row">
-          <q-input
-            label="Password"
-            v-model="selectedCustomer.password"
-            filled
-            :type="isPwd ? 'password' : 'text'"
-          >
-            <template v-slot:append>
-              <q-icon
-                :name="isPwd ? 'visibility_off' : 'visibility'"
-                class="cursor-pointer"
-                @click="isPwd = !isPwd"
-              />
-            </template>
-          </q-input>
-        </div>
-      </div>
-    </q-form>
+        <q-tabs v-model="tab" class="text-teal">
+          <q-tab name="person"    icon="face"           label=""><p>Intestatario<br>Legale rappresentate</p></q-tab>
+          <q-tab name="address"   icon="contacts"       label="Indirizzo" />
+          <q-tab name="company"   icon="building"       label="Azienda" v-if="isCompany"/>        
+          <q-tab name="contacts"  icon="phone"          label="Contatti" />
+          <q-tab name="security"  icon="security"       label="Credenziali" />     
+        </q-tabs>
+        <q-separator />
+        <q-tab-panels v-model="tab" animated>
+          <q-tab-panel name="person">
+            <div class="row"> 
+              <div class="col">
+                <ValidationProvider name="Nome" immediate rules="required|alpha_spaces" v-slot="{ errors }">
+                  <q-input label="Nome" v-model="selectedCustomer.firstname" />
+                  <span class="error">{{ errors[0] }}</span>
+                </ValidationProvider>
+              
+                <ValidationProvider name="Cognome" immediate rules="required|alpha_spaces" v-slot="{ errors }">
+                  <q-input label="Cognome" v-model="selectedCustomer.lastname" />
+                  <span class="error">{{ errors[0] }}</span>
+                </ValidationProvider>
+            
+                <ValidationProvider name="Codice Fiscale" immediate rules="required|codfis" v-slot="{ errors }">
+                  <q-input label="Codice Fiscale" v-model="selectedCustomer.codfis" />
+                  <span class="error">{{ errors[0] }}</span>
+                </ValidationProvider>
+              </div>
+            </div>
+          </q-tab-panel>
+      
+          <q-tab-panel name="address">
+            <div class="row">
+              <div class="col">
+                <ValidationProvider name="Indirizzo" immediate rules="required|address" v-slot="{ errors }">          
+                  <q-input label="Indirizzo" v-model="selectedCustomer.address" />
+                  <span class="error">{{ errors[0] }}</span>
+                </ValidationProvider>
+              
+                <ValidationProvider name="CAP" immediate rules="required|alpha_num" v-slot="{ errors }">          
+                  <q-input label="CAP" v-model="selectedCustomer.postalcode" />
+                  <span class="error">{{ errors[0] }}</span>
+                </ValidationProvider>
+              
+                <ValidationProvider name="Città" immediate rules="required|alpha" v-slot="{ errors }">          
+                  <q-input label="Città" v-model="selectedCustomer.city" />
+                  <span class="error">{{ errors[0] }}</span>
+                </ValidationProvider>
+              
+                <ValidationProvider name="Stato" immediate rules="required|alpha" v-slot="{ errors }">          
+                  <q-input label="Stato" v-model="selectedCustomer.state" />
+                  <span class="error">{{ errors[0] }}</span>
+                </ValidationProvider>
+              </div>
+            </div>
+          </q-tab-panel>
+
+          <q-tab-panel name="company">
+            <div id="companyFields" v-if="isCompany">
+              <div class="row">
+                <div class="col">
+                  <ValidationProvider name="Denominazone Azienda" immediate rules="required" v-slot="{ errors }">                
+                    <q-input label="Denominazione Azienda" v-model="selectedCustomer.company" />
+                    <span class="error">{{ errors[0] }}</span>
+                  </ValidationProvider>
+                
+                  <ValidationProvider name="Indirizzo Sede Azienda" immediate rules="required|alpha_num" v-slot="{ errors }">          
+                    <q-input label="Indirizzo Sede Azienda" v-model="selectedCustomer.companyaddress" />
+                    <span class="error">{{ errors[0] }}</span>
+                  </ValidationProvider>
+                
+                  <ValidationProvider name="Telefono principale aziendale" immediate rules="required|phone" v-slot="{ errors }">                    
+                    <q-input label="Telefono principale aziendale" v-model="selectedCustomer.companyphone" type="tel" />
+                    <span class="error">{{ errors[0] }}</span>
+                  </ValidationProvider>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <ValidationProvider name="Partita IVA" rules="required|vatcode" v-slot="{ errors }">          
+                    <q-input label="Partita IVA" v-model="selectedCustomer.vatcode" />
+                    <span class="error">{{ errors[0] }}</span>
+                  </ValidationProvider>          
+                
+                  <ValidationProvider name="Codice univoco SDI" rules="required|alpha_num" v-slot="{ errors }">                    
+                    <q-input label="Codice Univoco SDI" v-model="selectedCustomer.sdicode" />
+                    <span class="error">{{ errors[0] }}</span>
+                  </ValidationProvider>          
+                
+                  <ValidationProvider name="Email PEC" rules="required|email" v-slot="{ errors }">
+                    <q-input label="Email PEC" v-model="selectedCustomer.companypec" type="email" />
+                    <span class="error">{{ errors[0] }}</span>
+                  </ValidationProvider>
+                </div>
+              </div>
+            </div>
+          </q-tab-panel>
+
+          <q-tab-panel name="contacts">
+            <div class="row .offset-md-4">
+              <div class="col">          
+                <ValidationProvider name="Email" immediate rules="required|email" v-slot="{ errors }">                    
+                  <q-input label="Email" v-model="selectedCustomer.email" type="email" />
+                  <span class="error">{{ errors[0] }}</span>
+                </ValidationProvider>
+              
+                <ValidationProvider name="Tel. Mobile" immediate rules="required|phone" v-slot="{ errors }">                    
+                  <q-input label="Tel. Mobile" v-model="selectedCustomer.mobilephone" type="tel" />
+                  <span class="error">{{ errors[0] }}</span>
+                </ValidationProvider>
+              
+                <ValidationProvider name="Tel. Fisso" immediate rules="required|phone" v-slot="{ errors }">                    
+                  <q-input label="Tel. Fisso" v-model="selectedCustomer.phone" type="tel" />
+                  <span class="error">{{ errors[0] }}</span>
+                </ValidationProvider>
+              </div>
+            </div>
+          </q-tab-panel>
+
+          <q-tab-panel name="security">
+            <div class="row">
+              <div class="col">
+                <ValidationProvider name="Nome utente" immediate rules="required|email" v-slot="{ errors }">                    
+                  <q-input label="Nome utente" v-model="selectedCustomer.username" />
+                  <span class="error">{{ errors[0] }}</span>
+                </ValidationProvider>
+              
+                <ValidationProvider name="Password" immediate rules="required" v-slot="{ errors }">                    
+                  <q-input
+                    label="Password"
+                    v-model="selectedCustomer.password"
+                    filled
+                    :type="isPwd ? 'password' : 'text'"
+                  >
+                    <template v-slot:append>
+                      <q-icon
+                        :name="isPwd ? 'visibility_off' : 'visibility'"
+                        class="cursor-pointer"
+                        @click="isPwd = !isPwd"
+                      />
+                    </template>
+                  </q-input>
+                    <span class="error">{{ errors[0] }}</span>
+                </ValidationProvider>
+              </div>
+            </div>
+          </q-tab-panel>
+        </q-tab-panels>
+
+        
+      </q-form>
+    </ValidationObserver>
+
+    <q-separator vertical inset/>
+    
 
     <div v-if="contracts">
       <q-table
@@ -152,15 +221,19 @@
         </template>
       </q-table>
     </div>
+    
   </div>
 </template>
 
 <script lang="js">
 import { mapState } from 'vuex'
+import { ValidationProvider, ValidationObserver, extend, localize } from 'vee-validate';
+import validator from "./validator"
 
 export default {
   data() {
     return {
+        tab: 'person',
         isPwd: true,
         isCompany: false,        
         selectedCustomer: {},
@@ -224,7 +297,7 @@ export default {
         if(this.$store.state.customer) {
           this.selectedCustomer=Object.assign({}, this.$store.state.customer);                     
           if(this.selectedCustomer.vatcode==="") this.isCompany = false; 
-          else this.isCompany = true;
+          else {this.isCompany = true; this.tab="company";}
           console.log("Customer");
           console.log(this.selectedCustomer);            
           this.getCustomerContracts();          
@@ -307,6 +380,7 @@ export default {
       }   
   },
   mounted() {
+    validator.setup();
     this.getCustomerData();      
   },
   computed: mapState({
@@ -322,7 +396,11 @@ export default {
       else
         return "Ricerca o inserisci un nuovo cliente";
     }
-    })
+    }),
+    components: {
+      ValidationProvider,
+      ValidationObserver
+    }
 }
 </script>
 
@@ -335,5 +413,11 @@ export default {
 .invalid {
   border-color: rgb(255, 0, 0);
   background-color: rgb(255, 0, 0);
+}
+
+.error {
+  color: rgb(127, 127, 0);
+  background-color: yellow;
+  font-style: italic;
 }
 </style>
