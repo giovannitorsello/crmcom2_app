@@ -150,6 +150,7 @@
 
 <script>
 import { mapState } from 'vuex'
+import {Store} from '../store'
 import { ValidationProvider, ValidationObserver, extend, localize } from 'vee-validate';
 import validator from "./validator"
 
@@ -386,7 +387,7 @@ export default {
       });
     },
     exit() {
-      this.$router.push("/AdminHome");
+      this.$router.push("/AdminDashboard");
     }
   },
   computed: {
@@ -399,6 +400,14 @@ export default {
       }
       return "";
     }
+  },
+    beforeRouteEnter(to, from, next) {
+    var currentUser = Store.state.user;
+    console.log(currentUser);
+    if ((currentUser.role === "admin") || 
+        (currentUser.role === "manager") ||
+        (currentUser.role === "technician"))  next();
+    else next("/Login");
   }
 };
 </script>

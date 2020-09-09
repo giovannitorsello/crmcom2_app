@@ -52,11 +52,16 @@ export default {
       const store=this.$store;
       this.$axios.post('/adminarea/login', {username: this.username, password: this.password})
       .then((response) => {                     
-                if(response.data.status==="OK"){                                    
+                if(response.data.status==="OK"){
+                  const user=response.data.user;                                    
                   store.commit("changeUser", response.data.user);
                   this.initSession();
                   this.$q.notify({color: 'green-4', textColor: 'white', icon: 'cloud_done', message: 'Avvio connessione'});
-                  this.$router.push("/AdminHome");
+                  if(user.role=="admin")      this.$router.push("/AdminLayout");
+                  if(user.role=="manager")    this.$router.push("/ManagerLayout");
+                  if(user.role=="technician") this.$router.push("/TechnicianLayout");
+                  if(user.role=="installer")  this.$router.push("/InstallerLayout");                  
+                  if(user.role=="seller")     this.$router.push("/SellerLayout");
                 }
                 else {
                   this.$q.notify({color: 'red-4', textColor: 'white', icon: 'error', message: 'Credenziali errate'});
@@ -80,7 +85,6 @@ export default {
     }
   },
   computed: mapState({user: 'user'})
-  
 }
 </script>
 

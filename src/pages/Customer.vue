@@ -4,10 +4,10 @@
       Gestione del cliente
       <strong>{{customerDescription}}</strong>
     </h6>
-    <img src="/img/actions/new.png"     @click="newCustomer" style="width: 48px; height: 48px;" />
-    <img src="/img/actions/save.png"    @click="saveCustomer" style="width: 48px; height: 48px;" />
-    <img src="/img/actions/delete.png"  @click="deleteCustomer" style="width: 48px; height: 48px;" />
-    <img src="/img/actions/exit.png"    @click="exit" style="width: 48px; height: 48px;" />
+    <img src="/img/actions/new.png" @click="newCustomer" style="width: 48px; height: 48px;" />
+    <img src="/img/actions/save.png" @click="saveCustomer" style="width: 48px; height: 48px;" />
+    <img src="/img/actions/delete.png" @click="deleteCustomer" style="width: 48px; height: 48px;" />
+    <img src="/img/actions/exit.png" @click="exit" style="width: 48px; height: 48px;" />
 
     <ValidationObserver ref="formCustomer">
       <q-form ref="customerForm" class="q-gutter-md">
@@ -21,54 +21,94 @@
         </div>
 
         <q-tabs v-model="tab" class="text-teal">
-          <q-tab name="person"    icon="face"           label=""><p>Intestatario<br>Legale rappresentate</p></q-tab>
-          <q-tab name="address"   icon="contacts"       label="Indirizzo" />
-          <q-tab name="company"   icon="building"       label="Azienda" v-if="isCompany"/>        
-          <q-tab name="contacts"  icon="phone"          label="Contatti" />
-          <q-tab name="security"  icon="security"       label="Credenziali" />     
+          <q-tab name="person" icon="face" label>
+            <p>
+              Intestatario
+              <br />Legale rappresentate
+            </p>
+          </q-tab>
+          <q-tab name="address" icon="contacts" label="Indirizzo" />
+          <q-tab name="company" icon="building" label="Azienda" v-if="isCompany" />
+          <q-tab name="contacts" icon="phone" label="Contatti" />
+          <q-tab name="security" icon="security" label="Credenziali" />
         </q-tabs>
         <q-separator />
         <q-tab-panels v-model="tab" animated>
           <q-tab-panel name="person">
-            <div class="row"> 
+            <div class="row">
               <div class="col">
-                <ValidationProvider name="Nome" immediate rules="required|alpha_spaces" v-slot="{ errors }">
+                <ValidationProvider
+                  name="Nome"
+                  immediate
+                  rules="required|alpha_spaces"
+                  v-slot="{ errors }"
+                >
                   <q-input label="Nome" v-model="selectedCustomer.firstname" />
                   <span class="error">{{ errors[0] }}</span>
                 </ValidationProvider>
-              
-                <ValidationProvider name="Cognome" immediate rules="required|alpha_spaces" v-slot="{ errors }">
+
+                <ValidationProvider
+                  name="Cognome"
+                  immediate
+                  rules="required|alpha_spaces"
+                  v-slot="{ errors }"
+                >
                   <q-input label="Cognome" v-model="selectedCustomer.lastname" />
                   <span class="error">{{ errors[0] }}</span>
                 </ValidationProvider>
-            
-                <ValidationProvider name="Codice Fiscale" immediate rules="required|codfis" v-slot="{ errors }">
+
+                <ValidationProvider
+                  name="Codice Fiscale"
+                  immediate
+                  rules="required|codfis"
+                  v-slot="{ errors }"
+                >
                   <q-input label="Codice Fiscale" v-model="selectedCustomer.codfis" />
                   <span class="error">{{ errors[0] }}</span>
                 </ValidationProvider>
               </div>
             </div>
           </q-tab-panel>
-      
+
           <q-tab-panel name="address">
             <div class="row">
               <div class="col">
-                <ValidationProvider name="Indirizzo" immediate rules="required|address" v-slot="{ errors }">          
+                <ValidationProvider
+                  name="Indirizzo"
+                  immediate
+                  rules="required|address"
+                  v-slot="{ errors }"
+                >
                   <q-input label="Indirizzo" v-model="selectedCustomer.address" />
                   <span class="error">{{ errors[0] }}</span>
                 </ValidationProvider>
-              
-                <ValidationProvider name="CAP" immediate rules="required|alpha_num" v-slot="{ errors }">          
+
+                <ValidationProvider
+                  name="CAP"
+                  immediate
+                  rules="required|alpha_num"
+                  v-slot="{ errors }"
+                >
                   <q-input label="CAP" v-model="selectedCustomer.postalcode" />
                   <span class="error">{{ errors[0] }}</span>
                 </ValidationProvider>
-              
-                <ValidationProvider name="Città" immediate rules="required|alpha" v-slot="{ errors }">          
+
+                <ValidationProvider
+                  name="Città"
+                  immediate
+                  rules="required|alpha"
+                  v-slot="{ errors }"
+                >
                   <q-input label="Città" v-model="selectedCustomer.city" />
                   <span class="error">{{ errors[0] }}</span>
                 </ValidationProvider>
-              
-                <ValidationProvider name="Stato" immediate rules="required|alpha" v-slot="{ errors }">          
+
+                <ValidationProvider
+                  name="Stato"
+                  immediate
+                  rules="required|alpha"
+                  v-slot="{ errors }"
+                >
                   <q-input label="Stato" v-model="selectedCustomer.state" />
                   <span class="error">{{ errors[0] }}</span>
                 </ValidationProvider>
@@ -80,34 +120,64 @@
             <div id="companyFields" v-if="isCompany">
               <div class="row">
                 <div class="col">
-                  <ValidationProvider name="Denominazone Azienda" immediate rules="required" v-slot="{ errors }">                
+                  <ValidationProvider
+                    name="Denominazone Azienda"
+                    immediate
+                    rules="required"
+                    v-slot="{ errors }"
+                  >
                     <q-input label="Denominazione Azienda" v-model="selectedCustomer.company" />
                     <span class="error">{{ errors[0] }}</span>
                   </ValidationProvider>
-                
-                  <ValidationProvider name="Indirizzo Sede Azienda" immediate rules="required|alpha_num" v-slot="{ errors }">          
-                    <q-input label="Indirizzo Sede Azienda" v-model="selectedCustomer.companyaddress" />
+
+                  <ValidationProvider
+                    name="Indirizzo Sede Azienda"
+                    immediate
+                    rules="required|alpha_num"
+                    v-slot="{ errors }"
+                  >
+                    <q-input
+                      label="Indirizzo Sede Azienda"
+                      v-model="selectedCustomer.companyaddress"
+                    />
                     <span class="error">{{ errors[0] }}</span>
                   </ValidationProvider>
-                
-                  <ValidationProvider name="Telefono principale aziendale" immediate rules="required|phone" v-slot="{ errors }">                    
-                    <q-input label="Telefono principale aziendale" v-model="selectedCustomer.companyphone" type="tel" />
+
+                  <ValidationProvider
+                    name="Telefono principale aziendale"
+                    immediate
+                    rules="required|phone"
+                    v-slot="{ errors }"
+                  >
+                    <q-input
+                      label="Telefono principale aziendale"
+                      v-model="selectedCustomer.companyphone"
+                      type="tel"
+                    />
                     <span class="error">{{ errors[0] }}</span>
                   </ValidationProvider>
                 </div>
               </div>
               <div class="row">
                 <div class="col">
-                  <ValidationProvider name="Partita IVA" rules="required|vatcode" v-slot="{ errors }">          
+                  <ValidationProvider
+                    name="Partita IVA"
+                    rules="required|vatcode"
+                    v-slot="{ errors }"
+                  >
                     <q-input label="Partita IVA" v-model="selectedCustomer.vatcode" />
                     <span class="error">{{ errors[0] }}</span>
-                  </ValidationProvider>          
-                
-                  <ValidationProvider name="Codice univoco SDI" rules="required|alpha_num" v-slot="{ errors }">                    
+                  </ValidationProvider>
+
+                  <ValidationProvider
+                    name="Codice univoco SDI"
+                    rules="required|alpha_num"
+                    v-slot="{ errors }"
+                  >
                     <q-input label="Codice Univoco SDI" v-model="selectedCustomer.sdicode" />
                     <span class="error">{{ errors[0] }}</span>
-                  </ValidationProvider>          
-                
+                  </ValidationProvider>
+
                   <ValidationProvider name="Email PEC" rules="required|email" v-slot="{ errors }">
                     <q-input label="Email PEC" v-model="selectedCustomer.companypec" type="email" />
                     <span class="error">{{ errors[0] }}</span>
@@ -119,18 +189,33 @@
 
           <q-tab-panel name="contacts">
             <div class="row .offset-md-4">
-              <div class="col">          
-                <ValidationProvider name="Email" immediate rules="required|email" v-slot="{ errors }">                    
+              <div class="col">
+                <ValidationProvider
+                  name="Email"
+                  immediate
+                  rules="required|email"
+                  v-slot="{ errors }"
+                >
                   <q-input label="Email" v-model="selectedCustomer.email" type="email" />
                   <span class="error">{{ errors[0] }}</span>
                 </ValidationProvider>
-              
-                <ValidationProvider name="Tel. Mobile" immediate rules="required|phone" v-slot="{ errors }">                    
+
+                <ValidationProvider
+                  name="Tel. Mobile"
+                  immediate
+                  rules="required|phone"
+                  v-slot="{ errors }"
+                >
                   <q-input label="Tel. Mobile" v-model="selectedCustomer.mobilephone" type="tel" />
                   <span class="error">{{ errors[0] }}</span>
                 </ValidationProvider>
-              
-                <ValidationProvider name="Tel. Fisso" immediate rules="required|phone" v-slot="{ errors }">                    
+
+                <ValidationProvider
+                  name="Tel. Fisso"
+                  immediate
+                  rules="required|phone"
+                  v-slot="{ errors }"
+                >
                   <q-input label="Tel. Fisso" v-model="selectedCustomer.phone" type="tel" />
                   <span class="error">{{ errors[0] }}</span>
                 </ValidationProvider>
@@ -141,12 +226,17 @@
           <q-tab-panel name="security">
             <div class="row">
               <div class="col">
-                <ValidationProvider name="Nome utente" immediate rules="required|email" v-slot="{ errors }">                    
+                <ValidationProvider
+                  name="Nome utente"
+                  immediate
+                  rules="required|email"
+                  v-slot="{ errors }"
+                >
                   <q-input label="Nome utente" v-model="selectedCustomer.username" />
                   <span class="error">{{ errors[0] }}</span>
                 </ValidationProvider>
-              
-                <ValidationProvider name="Password" immediate rules="required" v-slot="{ errors }">                    
+
+                <ValidationProvider name="Password" immediate rules="required" v-slot="{ errors }">
                   <q-input
                     label="Password"
                     v-model="selectedCustomer.password"
@@ -161,19 +251,16 @@
                       />
                     </template>
                   </q-input>
-                    <span class="error">{{ errors[0] }}</span>
+                  <span class="error">{{ errors[0] }}</span>
                 </ValidationProvider>
               </div>
             </div>
           </q-tab-panel>
         </q-tab-panels>
-
-        
       </q-form>
     </ValidationObserver>
 
-    <q-separator vertical inset/>
-    
+    <q-separator vertical inset />
 
     <div v-if="contracts">
       <q-table
@@ -186,7 +273,7 @@
         :rows-per-page-options="[0]"
         @row-click="openContract"
       >
-      <template v-slot:header="props">
+        <template v-slot:header="props">
           <q-tr :props="props">
             <q-th auto-width />
             <q-th v-for="col in props.cols" :key="col.name" :props="props">{{ col.label }}</q-th>
@@ -221,12 +308,12 @@
         </template>
       </q-table>
     </div>
-    
   </div>
 </template>
 
 <script lang="js">
 import { mapState } from 'vuex'
+import {Store} from '../store'
 import { ValidationProvider, ValidationObserver, extend, localize } from 'vee-validate';
 import validator from "./validator"
 
@@ -400,7 +487,15 @@ export default {
     components: {
       ValidationProvider,
       ValidationObserver
-    }
+    },
+    beforeRouteEnter(to, from, next) {
+    var currentUser = Store.state.user;
+    console.log(currentUser);
+    if ((currentUser.role === "admin") || 
+        (currentUser.role === "manager") ||
+        (currentUser.role === "technician"))  next();
+    else next("/Login");
+  }
 }
 </script>
 

@@ -5,19 +5,46 @@
 </template>
 
 <script>
+import {Store} from '../store'
+
 export default {
   data() {
     return {
       fieldsTable: [
-        { name: "description", label: "Descrizione", sortable: true, field: row => row.description},
+        {
+          name: "description",
+          label: "Descrizione",
+          sortable: true,
+          field: row => row.description
+        },
         { name: "ip", label: "Ip", sortable: true, field: row => row.ip },
         { name: "min", label: "Min", sortable: true, field: row => row.min },
         { name: "max", label: "Max", sortable: true, field: row => row.max },
         { name: "avg", label: "Avg", sortable: true, field: row => row.avg },
-        { name: "loss", label: "Perdita", sortable: true, field: row => row.loss },
-        { name: "recvs", label: "Ricevuti (max 10)", sortable: true, field: row => row.recvs },
-        { name: "totLoss", label: "Perdita cumulata", sortable: true, field: row => row.totLoss },
-        { name: "repetition", label: "Ripetizione (max 10)", sortable: true, field: row => row.repetition }
+        {
+          name: "loss",
+          label: "Perdita",
+          sortable: true,
+          field: row => row.loss
+        },
+        {
+          name: "recvs",
+          label: "Ricevuti (max 10)",
+          sortable: true,
+          field: row => row.recvs
+        },
+        {
+          name: "totLoss",
+          label: "Perdita cumulata",
+          sortable: true,
+          field: row => row.totLoss
+        },
+        {
+          name: "repetition",
+          label: "Ripetizione (max 10)",
+          sortable: true,
+          field: row => row.repetition
+        }
       ],
       itemsTable: []
     };
@@ -67,6 +94,17 @@ export default {
         }
       });
     }
+  },
+  beforeRouteEnter(to, from, next) {
+    var currentUser = Store.state.user;
+    console.log(currentUser);
+    if (
+      currentUser.role === "admin" ||
+      currentUser.role === "manager" ||
+      currentUser.role === "technician"
+    )
+      next();
+    else next("/Login");
   }
 };
 </script>

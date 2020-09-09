@@ -1,40 +1,64 @@
 
+const allPages=[
+  { path: '/AdminDashboard', component: () => import('pages/customHomePage/AdminDashboard.vue') },
+  { path: '/ManagerDashboard', component: () => import('pages/customHomePage/ManagerDashboard.vue') },
+  { path: '/TechnicianDashboard', component: () => import('pages/customHomePage/TechnicianDashboard.vue') },
+  { path: '/InstallerDashboard', component: () => import('pages/customHomePage/InstallerDashboard.vue') },
+  { path: '/SellerDashboard', component: () => import('pages/customHomePage/SellerDashboard.vue') },
+  { path: '/User', component: () => import('pages/User.vue') },
+  { path: '/Customer', component: () => import('pages/Customer.vue') },
+  { path: '/Contract', component: () => import('pages/Contract.vue') },
+  { path: '/ViewData', component: () => import('pages/ViewData.vue') },
+  { path: '/ServiceContract', component: () => import('pages/ServiceContract.vue') },
+  { path: '/ServiceTemplate', component: () => import('pages/ServiceTemplate.vue') },
+  { path: '/DeviceCustomer', component: () => import('pages/DeviceCustomer.vue') },
+  { path: '/DeviceBackbone', component: () => import('pages/DeviceBackbone.vue') },
+  { path: '/SiteBackbone', component: () => import('pages/SiteBackbone.vue') },
+  { path: '/MonitorDevicesCustomer', component: () => import('pages/MonitorDeviceCustomer.vue') },
+  { path: '/MonitorDevicesBackbone', component: () => import('pages/MonitorDeviceBackbone.vue') }
+];
+
 const routes = [
-  {
+  {    
+    path: '',
+    component: () => import('layouts/LoginLayout.vue'),
+    children: [{ path: '', component: () => import('pages/Login.vue') }]
+  },
+  {    
     path: '/',
     component: () => import('layouts/LoginLayout.vue'),
-    children: [
-      { path: '', component: () => import('pages/Login.vue') },
-      { path: '/Login', component: () => import('pages/Login.vue') },      
-    ],
+    children: [{ path: '/', component: () => import('pages/Login.vue') }]
   },
-  {  
-    path: '/AdminHome',
+  {    
+    path: '/Login',
+    component: () => import('layouts/LoginLayout.vue'),
+    children: [{ path: '/', component: () => import('pages/Login.vue') }]
+  },
+  {
+    path: '/AdminLayout',
     component: () => import('layouts/AdminLayout.vue'),
-    children: [
-      { path: '/AdminHome', component: () => import('pages/AdminHome.vue') },            
-    ]
+    children: allPages
   },
-  {  
-    path: '/Customer',
-    component: () => import('layouts/AdminLayout.vue'),
-    children: [      
-      { path: '/User',                      component: () => import('pages/User.vue') },
-      { path: '/Customer',                  component: () => import('pages/Customer.vue') }, 
-      { path: '/Contract',                  component: () => import('pages/Contract.vue') },
-      { path: '/ViewData',                  component: () => import('pages/ViewData.vue') },
-      { path: '/ServiceContract',           component: () => import('pages/ServiceContract.vue') },
-      { path: '/ServiceTemplate',           component: () => import('pages/ServiceTemplate.vue') },
-      { path: '/DeviceCustomer',            component: () => import('pages/DeviceCustomer.vue') },
-      { path: '/DeviceBackbone',            component: () => import('pages/DeviceBackbone.vue') },
-      { path: '/SiteBackbone',              component: () => import('pages/SiteBackbone.vue') },      
-      { path: '/MonitorDevicesCustomer',    component: () => import('pages/MonitorDeviceCustomer.vue') },
-      { path: '/MonitorDevicesBackbone',    component: () => import('pages/MonitorDeviceBackbone.vue') }
-    ]
+  {
+    path: '/ManagerLayout',
+    component: () => import('layouts/ManagerLayout.vue'),
+    children: allPages
   },
-
-  // Always leave this as last one,
-  // but you can also remove it
+  {
+    path: '/TechnicianLayout',
+    component: () => import('layouts/TechnicianLayout.vue'),
+    children: allPages
+  },
+  {
+    path: '/InstallerLayout',
+    component: () => import('layouts/InstallerLayout.vue'),
+    children: allPages
+  },
+  {
+    path: '/SellerLayout',
+    component: () => import('layouts/SellerLayout.vue'),
+    children: allPages
+  },
   {
     path: '*',
     component: () => import('pages/Error404.vue')

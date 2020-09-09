@@ -64,45 +64,69 @@
       <b>{{ selectedSiteBackbone.description }}</b>
     </h5>
 
-    <img @click="newSiteBackbone()"  src="/img/actions/new.png"  style="width: 64px; height: 64px;" />
+    <img @click="newSiteBackbone()" src="/img/actions/new.png" style="width: 64px; height: 64px;" />
     <img @click="saveSiteBackbone()" src="/img/actions/save.png" style="width: 64px; height: 64px;" />
 
     <ValidationObserver ref="formSite">
-    <q-form ref="siteForm" class="q-gutter-md">
-      <div class="row">
-        <div class="col">
-          <ValidationProvider name="Descrizione" immediate rules="required|alpha_spaces" v-slot="{ errors }">
-            <q-input label="Descrizione" v-model="selectedSiteBackbone.description" />
-            <span class="error">{{ errors[0] }}</span>
-          </ValidationProvider>
+      <q-form ref="siteForm" class="q-gutter-md">
+        <div class="row">
+          <div class="col">
+            <ValidationProvider
+              name="Descrizione"
+              immediate
+              rules="required|alpha_spaces"
+              v-slot="{ errors }"
+            >
+              <q-input label="Descrizione" v-model="selectedSiteBackbone.description" />
+              <span class="error">{{ errors[0] }}</span>
+            </ValidationProvider>
+          </div>
+          <div class="col">
+            <ValidationProvider
+              name="Indirizzo"
+              immediate
+              rules="required|address"
+              v-slot="{ errors }"
+            >
+              <q-input label="Indirizzo" v-model="selectedSiteBackbone.address" />
+              <span class="error">{{ errors[0] }}</span>
+            </ValidationProvider>
+          </div>
         </div>
-        <div class="col">
-          <ValidationProvider name="Indirizzo" immediate rules="required|address" v-slot="{ errors }">          
-            <q-input label="Indirizzo" v-model="selectedSiteBackbone.address" />
-            <span class="error">{{ errors[0] }}</span>
-          </ValidationProvider>
+        <div class="row">
+          <div class="col">
+            <ValidationProvider
+              name="Latitudine"
+              immediate
+              rules="required|latitude"
+              v-slot="{ errors }"
+            >
+              <q-input label="Latitude" v-model="selectedSiteBackbone.latitude" />
+              <span class="error">{{ errors[0] }}</span>
+            </ValidationProvider>
+          </div>
+          <div class="col">
+            <ValidationProvider
+              name="Longitudine"
+              immediate
+              rules="required|longitude"
+              v-slot="{ errors }"
+            >
+              <q-input label="Longitude" v-model="selectedSiteBackbone.longitude" />
+              <span class="error">{{ errors[0] }}</span>
+            </ValidationProvider>
+          </div>
         </div>
-      </div>
-      <div class="row">
-        <div class="col">
-          <ValidationProvider name="Latitudine" immediate rules="required|latitude" v-slot="{ errors }">          
-            <q-input label="Latitude" v-model="selectedSiteBackbone.latitude" />
-            <span class="error">{{ errors[0] }}</span>
-          </ValidationProvider>
-
+        <div class="row">
+          <q-input
+            label="Note"
+            v-model="selectedSiteBackbone.note"
+            type="textarea"
+            cols="100"
+            rows="5"
+          />
         </div>
-        <div class="col">
-          <ValidationProvider name="Longitudine" immediate rules="required|longitude" v-slot="{ errors }">                    
-            <q-input label="Longitude" v-model="selectedSiteBackbone.longitude" />
-            <span class="error">{{ errors[0] }}</span>
-        </ValidationProvider>
-
-        </div>        
-      </div>
-      <div class="row">
-          <q-input label="Note" v-model="selectedSiteBackbone.note" type="textarea" cols="100" rows="5"/>
-      </div>
-    </q-form>
+      </q-form>
     </ValidationObserver>
 
     <hr class="separator" />
@@ -137,9 +161,16 @@
 
 <script>
 import D3Network from "vue-d3-network";
-import { mapState } from 'vuex'
-import { ValidationProvider, ValidationObserver, extend, localize } from 'vee-validate';
-import validator from "./validator"
+import { mapState } from "vuex";
+import {Store} from '../store'
+
+import {
+  ValidationProvider,
+  ValidationObserver,
+  extend,
+  localize
+} from "vee-validate";
+import validator from "./validator";
 
 export default {
   components: {
@@ -151,10 +182,10 @@ export default {
     return {
       siteFilter: "",
       initialPagination: {
-        sortBy: 'desc',
+        sortBy: "desc",
         descending: false,
         page: 2,
-        rowsPerPage: 5        
+        rowsPerPage: 5
       },
       columnsTableSites: [
         { name: "actions", label: "Azioni" },
@@ -203,25 +234,6 @@ export default {
       objDataSection: {},
       objDataPrimitives: {}
     };
-  },
-  computed: {
-    sortOptions() {
-      // Create an options list from our fields
-      return this.fields
-        .filter(f => f.sortable)
-        .map(f => {
-          return { text: f.label, value: f.key };
-        });
-    },
-    isConnected() {
-      if (
-        this.selectedSiteBackbone.objData &&
-        this.selectedSiteBackbone.objData.connectedSites &&
-        this.selectedSiteBackbone.objData.connectedSites.length > 0
-      )
-        return true;
-      else return false;
-    }
   },
   mounted() {
     this.getSiteBackboneData();
@@ -283,7 +295,10 @@ export default {
         });
     },
     getSiteBackboneData: function() {
-      this.selectedSiteBackbone = Object.assign({}, this.$store.state.siteBackbone);      
+      this.selectedSiteBackbone = Object.assign(
+        {},
+        this.$store.state.siteBackbone
+      );
     },
     parseSiteBackboneObjData: function() {
       if (this.selectedSiteBackbone.objData)
@@ -304,7 +319,7 @@ export default {
       if (site && this.selectedSiteBackbone) {
         this.selectedSiteBackbone.objData.connectedSites.forEach(
           (element, index, array) => {
-            if (element.id === site.id) {              
+            if (element.id === site.id) {
               this.selectedSiteBackbone.objData.connectedSites.splice(index, 1);
               this.saveSiteBackbone();
             }
@@ -324,15 +339,13 @@ export default {
         } else {
           const bExist = this.selectedSiteBackbone.objData.connectedSites.some(
             elem => {
-              return (elem.id === site.id);
+              return elem.id === site.id;
             }
           );
           if (!bExist) {
             this.selectedSiteBackbone.objData.connectedSites.push(site);
             this.saveSiteBackbone();
-          }
-          else
-            this.makeToast("Sito già collegato");
+          } else this.makeToast("Sito già collegato");
         }
       }
     },
@@ -352,10 +365,11 @@ export default {
             this.selectedSiteBackbone = response.data.siteBackbone;
             this.makeToast(response.data.msg);
             this.sitesBackbone = [this.selectedSiteBackbone];
-            this.$store.commit("changeSelectedSite", Object.assign({}, this.sitesBackbone));
-          } 
-          else 
-            this.makeToast(response.data.msg);
+            this.$store.commit(
+              "changeSelectedSite",
+              Object.assign({}, this.sitesBackbone)
+            );
+          } else this.makeToast(response.data.msg);
         })
         .catch(error => {
           console.log(error);
@@ -371,7 +385,10 @@ export default {
             this.selectedSiteBackbone = response.data.siteBackbone;
             this.getAllSitesBackbone();
             this.makeToast(response.data.msg);
-            this.$store.commit("changeSelectedSite", Object.assign({}, this.selectedSiteBackbone));      
+            this.$store.commit(
+              "changeSelectedSite",
+              Object.assign({}, this.selectedSiteBackbone)
+            );
           } else this.makeToast(response.data.msg, "danger");
         })
         .catch(error => {
@@ -387,10 +404,13 @@ export default {
           })
           .then(response => {
             if (response.data.status === "OK") {
-              this.selectedSiteBackbone = response.data.siteBackbone;              
+              this.selectedSiteBackbone = response.data.siteBackbone;
               this.makeToast(response.data.msg);
               this.getAllSitesBackbone();
-              this.$store.commit("changeSelectedSite", Object.assign({}, this.selectedSiteBackbone)); 
+              this.$store.commit(
+                "changeSelectedSite",
+                Object.assign({}, this.selectedSiteBackbone)
+              );
             } else this.makeToast(response.data.msg, "danger");
           })
           .catch(error => {
@@ -406,6 +426,15 @@ export default {
         message: string
       });
     }
+  },
+  computed: mapState({user: 'user'}),
+  beforeRouteEnter(to, from, next) {
+    var currentUser = Store.state.user;
+    console.log(currentUser);
+    if ((currentUser.role === "admin") || 
+        (currentUser.role === "manager") ||
+        (currentUser.role === "technician"))  next();
+    else next("/Login");
   }
 };
 </script>

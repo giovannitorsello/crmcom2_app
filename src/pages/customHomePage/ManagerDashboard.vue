@@ -22,19 +22,6 @@
 <script lang="js">
 import { mapState } from 'vuex'
 
-/*
-import User from '../components/User.vue';
-import Customer from '../components/Customer.vue'; 
-import Contract from '../components/Contract.vue'; 
-import Service from '../components/Service.vue';
-import ServiceTemplate from '../components/ServiceTemplate.vue';
-import DeviceCustomer from '../components/DeviceCustomer.vue';
-import DeviceBackbone from '../components/DeviceBackbone.vue';
-import SiteBackbone from '../components/SiteBackbone.vue';
-import ViewData from '../components/ViewData.vue';
-import MonitoringDeviceCustomer from '../components/MonitoringDeviceCustomer.vue';
-import MonitoringDeviceBackbone from '../components/MonitoringDeviceBackbone.vue';
-*/
 
 export default {
   data() {
@@ -54,20 +41,7 @@ export default {
     
     }
   },
-  components: {
-    /*
-      User,
-      Customer,
-      Contract,
-      Service,
-      ServiceTemplate,
-      DeviceCustomer,
-      DeviceBackbone,
-      SiteBackbone,
-      ViewData,
-      MonitoringDeviceCustomer,
-      MonitoringDeviceBackbone
-      */
+  components: {    
   },
   methods: {
       fullTextSearch: function () {                    

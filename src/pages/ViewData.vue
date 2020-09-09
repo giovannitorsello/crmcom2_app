@@ -26,8 +26,9 @@
     <q-table
       :data="objectsFound"
       :columns="columnsTableFields"
-      :pagination="initialPagination"      
-      :filter="txtFilter">
+      :pagination="initialPagination"
+      :filter="txtFilter"
+    >
       <template v-slot:top-right>
         <q-input borderless dense debounce="300" v-model="txtFilter" placeholder="Ricerca">
           <q-icon slot="append" name="search" />
@@ -65,6 +66,7 @@
 
 <script lang="js">
 import { mapState } from 'vuex'
+import {Store} from '../store'
 import objTypesJson from '../config/queriesAndExportData.json'
 
 export default {
@@ -162,7 +164,18 @@ export default {
       else 
         return customer.lastname+" "+customer.firstname;
     }
-  })
+  }),
+  beforeRouteEnter(to, from, next) {
+    var currentUser = Store.state.user;
+    console.log(currentUser);
+    if (
+      currentUser.role === "admin" ||
+      currentUser.role === "manager" ||
+      currentUser.role === "technician"
+    )
+      next();
+    else next("/Login");
+  }
 }
 </script>
 

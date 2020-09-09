@@ -4,7 +4,7 @@
       <q-toolbar>
         <q-btn dense flat round icon="menu" @click="left = !left" />
 
-        <q-toolbar-title>CrmCom2</q-toolbar-title>
+        <q-toolbar-title>CrmCom2 (Ufficio)</q-toolbar-title>
       </q-toolbar>
     </q-header>
 
@@ -15,10 +15,7 @@
         </q-item>
         <q-item clickable v-ripple to="/ViewData">
           <q-item-section>Ricerce</q-item-section>
-        </q-item>
-        <q-item clickable v-ripple to="/User">
-          <q-item-section>Utenti</q-item-section>
-        </q-item>
+        </q-item>        
         <q-item clickable v-ripple to="/SiteBackbone">
           <q-item-section>Siti</q-item-section>
         </q-item>

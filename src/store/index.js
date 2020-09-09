@@ -14,62 +14,64 @@ Vue.use(Vuex)
  * with the Store instance.
  */
 
+const Store = new Vuex.Store({
+  state: {
+    user: {},
+    customer: {},
+    contract: {},
+    service: {},
+    serviceTemplate: {},
+    invoice: {},
+    invoiceEntry: {},
+    deviceCustomer: {},
+    deviceBackbone: {},
+    siteBackbone: {}
+  },
+  getters: {},
+  mutations: {
+    changeUser(state, usr) {
+      state.user = usr
+    },
+    changeCustomer(state, cst) {
+      state.customer = cst
+    },
+    changeContract(state, ctr) {
+      state.contract = ctr
+    },
+    changeDeviceCustomer(state, dev) {
+      state.deviceCustomer = dev
+    },
+    changeService(state, srv) {
+      state.service = srv
+    },
+    changeServiceTemplate(state, srv) {
+      state.serviceTemplate = srv
+    },
+    changeInvoice(state, inv) {
+      state.invoice = inv
+    },
+    changeInvoiceEntry(state, invEntry) {
+      state.invoiceEntry = invEntry
+    },
+    changeDeviceBackbone(state, dev) {
+      state.deviceBackbone = dev
+    },
+    changeSiteBackbone(state, site) {
+      state.siteBackbone = site
+    }
+  },
+  actions: {},
+  modules: {
+    // example
+  },
+
+  // enable strict mode (adds overhead!)
+  // for dev mode only
+  strict: process.env.DEV
+})
+
 export default function (/* { ssrContext } */) {
-  const Store = new Vuex.Store({
-    state: {
-      user: {},
-      customer: {},
-      contract: {},
-      service: {},
-      serviceTemplate: {},
-      invoice: {},
-      invoiceEntry: {},
-      deviceCustomer: {},
-      deviceBackbone: {},
-      siteBackbone: {}
-    },
-    getters: {},
-    mutations: {
-      changeUser(state, usr) {
-        state.user = usr
-      },
-      changeCustomer(state, cst) {
-        state.customer = cst
-      },
-      changeContract(state, ctr) {
-        state.contract = ctr
-      },
-      changeDeviceCustomer(state, dev) {
-        state.deviceCustomer = dev
-      },
-      changeService(state, srv) {
-        state.service = srv
-      },
-      changeServiceTemplate(state, srv) {
-        state.serviceTemplate = srv
-      },
-      changeInvoice(state, inv) {
-        state.invoice = inv
-      },
-      changeInvoiceEntry(state, invEntry) {
-        state.invoiceEntry = invEntry
-      },
-      changeDeviceBackbone(state, dev) {
-        state.deviceBackbone = dev
-      },
-      changeSiteBackbone(state, site) {
-        state.siteBackbone = site
-      }
-    },
-    actions: {},
-    modules: {
-      // example
-    },
-
-    // enable strict mode (adds overhead!)
-    // for dev mode only
-    strict: process.env.DEV
-  })
-
   return Store
 }
+
+export { Store }

@@ -158,6 +158,7 @@
 
 <script lang="js">
 import { mapState } from 'vuex'
+import {Store} from '../store'
 import { ValidationProvider, ValidationObserver, extend, localize } from 'vee-validate';
 import validator from "./validator"
 import companyassetsJson from '../config/companyassets.json'
@@ -286,6 +287,14 @@ export default {
   }),
   mounted () {
     this.getDeviceData();       
+  },
+    beforeRouteEnter(to, from, next) {
+    var currentUser = Store.state.user;
+    console.log(currentUser);
+    if ((currentUser.role === "admin") || 
+        (currentUser.role === "manager") ||
+        (currentUser.role === "technician"))  next();
+    else next("/Login");
   }
 }
 </script>

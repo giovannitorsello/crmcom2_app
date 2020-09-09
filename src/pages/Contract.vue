@@ -158,6 +158,7 @@
 
 <script lang="js">
 import { mapState } from 'vuex'
+import {Store} from '../store'
 
 export default {
   data() {
@@ -430,6 +431,14 @@ export default {
   },
   created() {
       
+  },
+    beforeRouteEnter(to, from, next) {
+    var currentUser = Store.state.user;
+    console.log(currentUser);
+    if ((currentUser.role === "admin") || 
+        (currentUser.role === "manager") ||
+        (currentUser.role === "technician"))  next();
+    else next("/Login");
   }
 }
 </script>

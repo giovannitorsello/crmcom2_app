@@ -4,17 +4,17 @@
       <q-toolbar>
         <q-btn dense flat round icon="menu" @click="left = !left" />
 
-        <q-toolbar-title>
-          <q-avatar>           
-          </q-avatar>CrmCom2
-        </q-toolbar-title>
+        <q-toolbar-title>CrmCom2 (Amministratore)</q-toolbar-title>
       </q-toolbar>
     </q-header>
 
-    <q-drawer v-model="left" side="left" overlay behavior="mobile" bordered>
-      
-      <q-list bordered separator>
-        <q-item clickable v-ripple to="/AdminHome">
+   <q-drawer v-model="left" side="left" overlay behavior="mobile" bordered>
+      <LeftMenu/>      
+    </q-drawer>
+
+
+ <!--q-list bordered separator>
+        <q-item clickable v-ripple to="/AdminDashboard">
           <q-item-section>Home</q-item-section>
         </q-item>
         <q-item clickable v-ripple to="/ViewData">
@@ -38,12 +38,7 @@
         <q-item clickable v-ripple to="/MonitorDevicesBackbone">
           <q-item-section>MonitorDevicesBackbone</q-item-section>
         </q-item>
-      </q-list>
-      
-      
-      <q-btn flat color="primary" label="Logout" @click="logout" />    
-    </q-drawer>
-
+      </q-list-->
     <q-page-container>
           <router-view />
     </q-page-container>
@@ -52,37 +47,19 @@
 </template>
 
 <script>
+import LeftMenu from "../components/LeftMenu.vue"
+
 export default {
   data() {
     return {
       left: false
     };
   },
-  methods: {
-    users() {
-      this.$router.push("/User");
-    },
-    monitorDevicesBackbone() {
-       this.$router.push("/MonitorDevicesBackbone");
-    },
-    monitorDevicesCustomer() {
-       this.$router.push("/MonitorDevicesCustomer");
-    },
-    logout() {
-      const store = this.$store;
-      const usr = this.$store.state.user;
-      this.$axios
-        .post("/adminarea/logout", { user: usr })
-        .then(response => {
-          store.commit("changeUser", {});
-          this.$router.push("/Login");
-        })
-        .catch(error => {
-          store.commit("changeUser", {});
-          this.$router.push("/Login");
-          console.log(error);
-        });
-    }
+  created() {
+    this.$router.push("/AdminDashboard");
+  },
+  components: {
+    LeftMenu
   }
 };
 </script>

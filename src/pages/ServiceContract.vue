@@ -9,7 +9,12 @@
       <q-form ref="serviceForm" class="q-gutter-md">
         <div class="row">
           <div class="col">
-            <ValidationProvider name="Descrizione" immediate rules="required|alpha_spaces" v-slot="{ errors }">
+            <ValidationProvider
+              name="Descrizione"
+              immediate
+              rules="required|alpha_spaces"
+              v-slot="{ errors }"
+            >
               <q-input label="Descrizione" v-model="selectedServiceTemplate.description" />
               <span class="error">{{ errors[0] }}</span>
             </ValidationProvider>
@@ -18,13 +23,23 @@
             <q-input label="Codice" v-model="selectedService.code" />
           </div>
           <div class="col">
-            <ValidationProvider name="Unità" immediate rules="required|alpha_spaces" v-slot="{ errors }">          
+            <ValidationProvider
+              name="Unità"
+              immediate
+              rules="required|alpha_spaces"
+              v-slot="{ errors }"
+            >
               <q-input label="Unità" v-model="selectedServiceTemplate.unit" />
               <span class="error">{{ errors[0] }}</span>
             </ValidationProvider>
           </div>
           <div class="col">
-            <ValidationProvider name="Intervallo di fatturazione" immediate rules="required|number" v-slot="{ errors }">          
+            <ValidationProvider
+              name="Intervallo di fatturazione"
+              immediate
+              rules="required|number"
+              v-slot="{ errors }"
+            >
               <q-input
                 label="Intervallo fatturazione in giorni"
                 v-model="selectedServiceTemplate.billingPeriod"
@@ -36,13 +51,13 @@
 
         <div class="row">
           <div class="col">
-            <ValidationProvider name="Prezzo" immediate rules="required|number" v-slot="{ errors }">          
+            <ValidationProvider name="Prezzo" immediate rules="required|number" v-slot="{ errors }">
               <q-input label="Prezzo" v-model="selectedServiceTemplate.price" />
               <span class="error">{{ errors[0] }}</span>
             </ValidationProvider>
           </div>
           <div class="col">
-            <ValidationProvider name="IVA" immediate rules="required|number" v-slot="{ errors }">          
+            <ValidationProvider name="IVA" immediate rules="required|number" v-slot="{ errors }">
               <q-input label="IVA" v-model="selectedServiceTemplate.vat" />
               <span class="error">{{ errors[0] }}</span>
             </ValidationProvider>
@@ -51,7 +66,12 @@
 
         <div class="row">
           <div class="col">
-            <ValidationProvider name="G. avviso fattura" immediate rules="required|number" v-slot="{ errors }">          
+            <ValidationProvider
+              name="G. avviso fattura"
+              immediate
+              rules="required|number"
+              v-slot="{ errors }"
+            >
               <q-input
                 label="Giorni successivi all'invio fattura a partire dai quali viene prodotto l'avviso"
                 v-model="selectedServiceTemplate.dayinvoicereminder"
@@ -62,7 +82,12 @@
         </div>
         <div class="row">
           <div class="col">
-            <ValidationProvider name="G. mancato pagamento" immediate rules="required|number" v-slot="{ errors }">          
+            <ValidationProvider
+              name="G. mancato pagamento"
+              immediate
+              rules="required|number"
+              v-slot="{ errors }"
+            >
               <q-input
                 label="Giorni invio preavviso mancato pagamento"
                 v-model="selectedServiceTemplate.nopaydaysbeforedeactivation"
@@ -73,7 +98,12 @@
         </div>
         <div class="row">
           <div class="col">
-              <ValidationProvider name="G. disatt. servizi" immediate rules="required|number" v-slot="{ errors }">          
+            <ValidationProvider
+              name="G. disatt. servizi"
+              immediate
+              rules="required|number"
+              v-slot="{ errors }"
+            >
               <q-input
                 label="Giorni invio preavviso disattivazione dei servizi"
                 v-model="selectedServiceTemplate.dayforexpirationwarning"
@@ -83,12 +113,13 @@
           </div>
         </div>
       </q-form>
-    </ValidationObserver>  
+    </ValidationObserver>
   </div>
 </template>
 
 <script lang="js">
 import { mapState } from 'vuex'
+import {Store} from '../store'
 import { ValidationProvider, ValidationObserver, extend, localize } from 'vee-validate';
 import validator from "./validator"
 
@@ -153,6 +184,17 @@ export default {
   }),
   mounted () {
     this.getServiceData();       
+  },
+  beforeRouteEnter(to, from, next) {
+    var currentUser = Store.state.user;
+    console.log(currentUser);
+    if (
+      currentUser.role === "admin" ||
+      currentUser.role === "manager" ||
+      currentUser.role === "technician"
+    )
+      next();
+    else next("/Login");
   }
 }
 </script>
