@@ -15,7 +15,8 @@ const allPages=[
   { path: '/DeviceBackbone', component: () => import('pages/DeviceBackbone.vue') },
   { path: '/SiteBackbone', component: () => import('pages/SiteBackbone.vue') },
   { path: '/MonitorDevicesCustomer', component: () => import('pages/MonitorDeviceCustomer.vue') },
-  { path: '/MonitorDevicesBackbone', component: () => import('pages/MonitorDeviceBackbone.vue') }
+  { path: '/MonitorDevicesBackbone', component: () => import('pages/MonitorDeviceBackbone.vue') },
+  { path: '/WizardCustomerRegistration', component: () => import('pages/WizardCustomerRegistration.vue') }
 ];
 
 const routes = [
@@ -35,11 +36,11 @@ const routes = [
     children: [{ path: '/', component: () => import('pages/Login.vue') }]
   },
   {
-    path: '/AdminLayout',
-    component: () => import('layouts/AdminLayout.vue'),
+    path: '/MainLayout',
+    component: () => import('layouts/MainLayout.vue'),
     children: allPages
   },
-  {
+  /*{
     path: '/ManagerLayout',
     component: () => import('layouts/ManagerLayout.vue'),
     children: allPages
@@ -58,7 +59,7 @@ const routes = [
     path: '/SellerLayout',
     component: () => import('layouts/SellerLayout.vue'),
     children: allPages
-  },
+  },*/
   {
     path: '*',
     component: () => import('pages/Error404.vue')

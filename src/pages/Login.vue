@@ -30,7 +30,7 @@ import { mapState } from 'vuex'
 
 export default {
   data() {
-    return { username: 'torsello', password: 'essequel', accept: false}
+    return { username: 'installatore', password: 'installatore', accept: false}
   },
   methods: {
     onSubmit () {
@@ -57,11 +57,11 @@ export default {
                   store.commit("changeUser", response.data.user);
                   this.initSession();
                   this.$q.notify({color: 'green-4', textColor: 'white', icon: 'cloud_done', message: 'Avvio connessione'});
-                  if(user.role=="admin")      this.$router.push("/AdminLayout");
-                  if(user.role=="manager")    this.$router.push("/ManagerLayout");
-                  if(user.role=="technician") this.$router.push("/TechnicianLayout");
-                  if(user.role=="installer")  this.$router.push("/InstallerLayout");                  
-                  if(user.role=="seller")     this.$router.push("/SellerLayout");
+                  if(user.role=="admin")      this.$router.push("/MainLayout");
+                  if(user.role=="manager")    this.$router.push("/MainLayout");
+                  if(user.role=="technician") this.$router.push("/MainLayout");
+                  if(user.role=="installer")  this.$router.push("/MainLayout");                  
+                  if(user.role=="seller")     this.$router.push("/MainLayout");
                 }
                 else {
                   this.$q.notify({color: 'red-4', textColor: 'white', icon: 'error', message: 'Credenziali errate'});

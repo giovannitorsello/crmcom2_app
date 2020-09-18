@@ -9,15 +9,7 @@
     </q-header>
 
    <q-drawer v-model="left" side="left" overlay behavior="mobile" bordered>
-      <q-list bordered>
-        <q-item clickable v-ripple to="/WizardRegisterCustomer">
-          <q-item-section>Registrazione cliente</q-item-section>
-        </q-item>
-        <q-item clickable v-ripple to="/ViewCustomer">
-          <q-item-section>Visualizza dati cliente</q-item-section>
-        </q-item>
-      </q-list>
-      <q-btn flat color="primary" label="Logout" @click="logout" />
+      <LeftMenu/>      
     </q-drawer>
 
 
@@ -30,6 +22,8 @@
 </template>
 
 <script>
+import LeftMenu from "../components/LeftMenu.vue"
+
 export default {
   data() {
     return {
@@ -52,6 +46,9 @@ export default {
           console.log(error);
         });
     }
+  },
+  components: {
+    LeftMenu
   }
 };
 </script>

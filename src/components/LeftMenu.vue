@@ -28,6 +28,7 @@ export default {
     };
   },
   created() {
+    console.log(this.user.role);
     if (this.user.role === "admin") {
       this.pagesAllowed = [
         { id: 1, name: "Ricerche", route: "/ViewData", type: "general" },
@@ -66,6 +67,12 @@ export default {
           name: "Server di notifica",
           route: "/ServerNotify",
           type: "settings"
+        },
+        {
+          id: 8,
+          name: "Utenti",
+          route: "/User",
+          type: "settings"
         }
       ];
     }
@@ -95,6 +102,12 @@ export default {
           name: "Monitor Dispositivi Backbone",
           route: "/MonitorDevicesBackbone",
           type: "monitor"
+        },
+        {
+          id: 6,
+          name: "Registrazione cliente",
+          route: "/WizardCustomerRegistration",
+          type: "generic"
         }
       ];
     }
@@ -146,6 +159,12 @@ export default {
           name: "Check dispositivo",
           route: "/CheckDevice",
           type: "generic"
+        },
+        {
+          id: 3,
+          name: "Registrazione cliente",
+          route: "/WizardCustomerRegistration",
+          type: "generic"
         }
       ];
     }
@@ -153,6 +172,12 @@ export default {
       this.pagesAllowed = [
         {
           id: 1,
+          name: "Registrazione cliente",
+          route: "/WizardCustomerRegistration",
+          type: "generic"
+        },
+        {
+          id: 2,
           name: "Registrazione cliente",
           route: "/WizardCustomerRegistration",
           type: "generic"

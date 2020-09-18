@@ -9,28 +9,7 @@
     </q-header>
 
     <q-drawer v-model="left" side="left" overlay behavior="mobile" bordered>
-      <q-list bordered>
-        <q-item clickable v-ripple to="/AdminHome">
-          <q-item-section>Home</q-item-section>
-        </q-item>
-        <q-item clickable v-ripple to="/ViewData">
-          <q-item-section>Ricerce</q-item-section>
-        </q-item>        
-        <q-item clickable v-ripple to="/SiteBackbone">
-          <q-item-section>Siti</q-item-section>
-        </q-item>
-        <q-item clickable v-ripple to="/DeviceBackbone">
-          <q-item-section>Dispositivi del Backbone</q-item-section>
-        </q-item>
-        <q-item clickable v-ripple to="/MonitorDevicesCustomer">
-          <q-item-section>Monitor Dispositivi Cliente</q-item-section>
-        </q-item>
-        <q-item clickable v-ripple to="/MonitorDevicesBackbone">
-          <q-item-section>Monitor Dispositivi Backbone</q-item-section>
-        </q-item>
-      </q-list>
-
-      <q-btn flat color="primary" label="Logout" @click="logout" />
+      <LeftMenu />
     </q-drawer>
 
     <q-page-container>
@@ -42,6 +21,8 @@
 </template>
 
 <script>
+import LeftMenu from "../components/LeftMenu.vue"
+
 export default {
   data() {
     return {
@@ -64,6 +45,9 @@ export default {
           console.log(error);
         });
     }
+  },
+  components: {
+    LeftMenu
   }
 };
 </script>
