@@ -1,6 +1,6 @@
 <template>
   <div id="customers">
-    <h5>Inserimento guidato cliente</h5>
+    <h5>Inserimento guidato cliente ({{uuid}})</h5>
     <h6 v-if="step==1">
       <b>Configurazione contratto:</b> Tipo di cliente privato o azienda?
     </h6>
@@ -286,7 +286,7 @@
               />
             </div>
           </div>
-          <div class="row" v-if="step==6" stype="with: 100%">
+          <div class="row" v-if="step==7" stype="with: 100%">
             <div class="col">
               <img :src="imageCfFront" style="width: 300px" />
               <img :src="imageCfBack" style="width: 300px" />
@@ -389,7 +389,8 @@ export default {
         imageCfFront: '',
         imageCfBack: '',
         imageCiFront: '',
-        imageCiBack: ''
+        imageCiBack: '',
+        uuid: '' //Identifier of client data as images
     }
   },
   methods: {      
@@ -431,7 +432,28 @@ export default {
       async captureCiFront () {
         const image = await Camera.getPhoto({width: 600, height: 350, quality: 100, allowEditing: true, resultType: CameraResultType.base64});
         this.imageCiFront = "data:image/png;base64, "+image.base64String;  
-        this.$axios.post('/adminarea/upload_image', {imageName: "CiFront", imageData: image.base64String})
+        this.uploadImage("CiFront-"+this.uuid, image.base64String);
+      },
+      async captureCiBack () {
+        const image = await Camera.getPhoto({width: 600, height: 350, quality: 100, allowEditing: true, resultType: CameraResultType.base64});
+        this.imageCiBack = "data:image/png;base64, "+image.base64String; 
+        this.uploadImage("CiBack-"+this.uuid, image.base64String);
+      },
+      async captureCfFront () {
+        const image = await Camera.getPhoto({width: 600, height: 350, quality: 100, allowEditing: true, resultType: CameraResultType.base64});
+        this.imageCfFront = "data:image/png;base64, "+image.base64String    
+        this.uploadImage("CfFront-"+this.uuid, image.base64String);
+      },
+      async captureCfBack () {
+        const image = await Camera.getPhoto({width: 600, height: 350, quality: 100, allowEditing: true, resultType: CameraResultType.base64});
+        this.imageCfBack = "data:image/png;base64, "+image.base64String;
+        this.uploadImage("CfBack-"+this.uuid, image.base64String);    
+      },
+      uploadImage(imageName, imageData) {
+        let data = new FormData();
+        data.append('imageName', imageName);
+        data.append('file', imageData); 
+        this.$axios.post('/adminarea/upload_image', data, {header : {'Content-Type' : 'image/png'}})
           .then(response => {                             
                 if (response.data.status === "OK") {                                        
                     this.makeToast(response.data.msg);                       
@@ -439,24 +461,27 @@ export default {
             })
             .catch(error => {                              
                 console.log(error);
-            });        
+            });  
       },
-      async captureCiBack () {
-        const image = await Camera.getPhoto({width: 600, height: 350, quality: 100, allowEditing: true, resultType: CameraResultType.base64});
-        this.imageCiBack = "data:image/png;base64, "+image.base64String;    
+      getUuid() {        
+        this.$axios.post('/adminarea/get_uuid', {})
+          .then(response => {                             
+                if (response.data.status === "OK") {                                        
+                    this.uuid=response.data.results.uuid;
+                }                                     
+            })
+            .catch(error => {                              
+                console.log(error);
+            });  
       },
-      async captureCfFront () {
-        const image = await Camera.getPhoto({width: 600, height: 350, quality: 100, allowEditing: true, resultType: CameraResultType.base64});
-        this.imageCfFront = "data:image/png;base64, "+image.base64String      
-      },
-      async captureCfBack () {
-        const image = await Camera.getPhoto({width: 600, height: 350, quality: 100, allowEditing: true, resultType: CameraResultType.base64});
-        this.imageCfBack = "data:image/png;base64, "+image.base64String;      
-      }
+      makeToast(string) {        
+        this.$q.notify({color: 'green-4', textColor: 'white', icon: 'info', message: string});
+      } 
   },
   mounted() {
     validator.setup(); 
-    this.getAllServiceTemplates();    
+    this.getAllServiceTemplates();  
+    this.getUuid();  
   },
   computed: mapState({
     user: 'user',
