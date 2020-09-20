@@ -22,6 +22,9 @@
     <h6 v-if="step==7">
       <b>Configurazione contratto:</b>Codice fiscale cliente
     </h6>
+    <h6 v-if="step==8">
+      <b>Configurazione contratto:</b>Controlli finali
+    </h6>
 
     <div id="dataFormDiv" style="padding-bottom: 100px;">
       <ValidationObserver ref="formCustomer">
@@ -246,20 +249,55 @@
           </div>
 
           <!--Step 6 identity documents -->
+          <div class="row" v-if="step==6 || step==7">
+            <div class="col">
+              <q-btn-toggle
+                v-model="fromCamera"
+                toggle-color="primary"
+                no-caps
+                rounded
+                unelevated
+                :options="[{label: 'Camera', value: true},{label: 'File', value: false},]"
+              />
+            </div>
+          </div>
+
+          <!--Step 6 identity card -->
           <div class="row" v-if="step==6" stype="with: 100%">
             <div class="col">
               <q-btn
+                v-if="fromCamera"
                 color="primary"
                 style="width: 300px"
-                label="Carta identità fronte"
+                label="Carta identità fronte (camera)"
                 @click="captureCiFront"
               />
-
+              <q-uploader
+                v-if="!fromCamera"
+                auto-upload
+                :factory="uploadCiFront"
+                max-file-size="2048000"
+                accept=".jpg"
+                style="max-width: 300px"
+                label="Acquisizione da file (solo jpg)"
+              />
+            </div>
+            <div class="col">
               <q-btn
+                v-if="fromCamera"
                 color="primary"
                 style="width: 300px"
-                label="Carta identità retro"
+                label="Carta identità retro (camera)"
                 @click="captureCiBack"
+              />
+              <q-uploader
+                v-if="!fromCamera"
+                auto-upload
+                :factory="uploadCiBack"
+                accept=".jpg"
+                max-file-size="2048000"
+                style="max-width: 300px"
+                label="Acquisizione da file (solo jpg)"
               />
             </div>
           </div>
@@ -270,19 +308,42 @@
             </div>
           </div>
 
+          <!--Step 7 identity ficalcode/health card -->
           <div class="row" v-if="step==7" stype="with: 100%">
             <div class="col">
               <q-btn
+                v-if="fromCamera"
                 color="primary"
                 style="width: 300px"
-                label="Codice fiscale fronte"
+                label="Codice fiscale fronte (camera)"
                 @click="captureCfFront"
               />
+              <q-uploader
+                v-if="!fromCamera"
+                auto-upload
+                :factory="uploadCfFront"
+                max-file-size="2048000"
+                accept=".jpg"
+                style="max-width: 300px"
+                label="Acquisizione da file (solo jpg)"
+              />
+            </div>
+            <div class="col">
               <q-btn
+                v-if="fromCamera"
                 color="primary"
                 style="width: 300px"
-                label="Codice fiscale retro"
+                label="Codice fiscale retro (camera)"
                 @click="captureCfBack"
+              />
+              <q-uploader
+                v-if="!fromCamera"
+                auto-upload
+                :factory="uploadCfBack"
+                max-file-size="2048000"
+                accept=".jpg"
+                style="max-width: 300px"
+                label="Acquisizione da file (solo jpg)"
               />
             </div>
           </div>
@@ -290,6 +351,19 @@
             <div class="col">
               <img :src="imageCfFront" style="width: 300px" />
               <img :src="imageCfBack" style="width: 300px" />
+            </div>
+          </div>
+
+          <!-- Step 8 final check -->
+          <div class="row" v-if="step==8">
+            <div class="col">
+              <pdf :src="fileFinalDocument"></pdf>
+            </div>
+          </div>
+          <div class="row" v-if="step==8">
+            <div class="col">
+              <q-btn color="primary" icon="mail" label="Invia per email al cliente" @click="sendFinalDocumentByEmail"/>
+              <q-btn color="primary" icon="document" label="Visualizza" @click="openFinalDocument"/>
             </div>
           </div>
         </q-form>
@@ -332,14 +406,16 @@ import {Store} from '../store'
 import { ValidationProvider, ValidationObserver, extend, localize } from 'vee-validate';
 import validator from "./validator"
 import { Plugins, CameraResultType } from '@capacitor/core'
-
+import pdf from 'vue-pdf'
 const { Camera } = Plugins
 
 export default {
   data() {
     return {
         step: 1,
-        stepMax: 7,
+        stepMax: 8,
+        fileFinalDocument: "",
+        fromCamera: true,
         helpAddress: false,
         isCompany: false,
         serviceTemplates: {},        
@@ -394,89 +470,152 @@ export default {
     }
   },
   methods: {      
-      nextStep() {
-        if(this.step<this.stepMax) this.step++;
-      },
-      prevStep() {
-        if(this.step>=2) this.step--;
-      },
-      getAllServiceTemplates() {
-        this.$axios.post('/adminarea/serviceTemplate/getall', {})
-            .then(response => {                             
-                  if (response.data.status === "OK") {                  
-                      this.serviceTemplates = response.data.serviceTemplates; 
-                      console.log(this.serviceTemplates);
-                      this.makeToast(response.data.msg);                       
-                  }                                     
-              })
-              .catch(error => {                              
-                  console.log(error);
-              });
-      },
-      getSelectedServiceTemplate() {
-          if(this.selectedServicesTemplate.length) {
-          var price=0, vat=0, total=0;
-          this.selectedServicesTemplate.forEach((element, index, array) => {
-            console.log(element)
-            price+=element.price;
-            vat+=(element.price*element.vat)/100;
-            total=price+vat;
-            
-            if(index===this.selectedServicesTemplate-1) {
-              this.valueContract={"price": price, "vat": vat, "total": total};
-            }
-          });      
-        }
-        this.valueContract={price: 0, vat: 0, total: 0};           
-      },
-      async captureCiFront () {
-        const image = await Camera.getPhoto({width: 600, height: 350, quality: 100, allowEditing: true, resultType: CameraResultType.base64});
-        this.imageCiFront = "data:image/png;base64, "+image.base64String;  
-        this.uploadImage("CiFront-"+this.uuid, image.base64String);
-      },
-      async captureCiBack () {
-        const image = await Camera.getPhoto({width: 600, height: 350, quality: 100, allowEditing: true, resultType: CameraResultType.base64});
-        this.imageCiBack = "data:image/png;base64, "+image.base64String; 
-        this.uploadImage("CiBack-"+this.uuid, image.base64String);
-      },
-      async captureCfFront () {
-        const image = await Camera.getPhoto({width: 600, height: 350, quality: 100, allowEditing: true, resultType: CameraResultType.base64});
-        this.imageCfFront = "data:image/png;base64, "+image.base64String    
-        this.uploadImage("CfFront-"+this.uuid, image.base64String);
-      },
-      async captureCfBack () {
-        const image = await Camera.getPhoto({width: 600, height: 350, quality: 100, allowEditing: true, resultType: CameraResultType.base64});
-        this.imageCfBack = "data:image/png;base64, "+image.base64String;
-        this.uploadImage("CfBack-"+this.uuid, image.base64String);    
-      },
-      uploadImage(imageName, imageData) {
-        let data = new FormData();
-        data.append('imageName', imageName);
-        data.append('file', imageData); 
-        this.$axios.post('/adminarea/upload_image', data, {header : {'Content-Type' : 'image/png'}})
+    nextStep() {    
+      if(this.step<this.stepMax) this.step++;
+      if(this.step==8) this.generateFinalDocuments();
+    },
+    prevStep() {
+      if(this.step>=2) this.step--;
+    },
+    generateFinalDocuments() {
+      this.$axios.post('/adminarea/registration/generate_final_document', {uuid: this.uuid})
+        .then(response => {                             
+              if (response.data.status === "OK") {  
+                this.fileFinalDocument=response.data.results.urlFinalDocument;
+                console.log(this.fileFinalDocument);                                        
+                this.makeToast(response.data.msg);
+              }                                     
+          })
+          .catch(error => {                              
+              console.log(error);
+              this.makeToast("Si è verificato un errore");
+          });
+    },
+    openFinalDocument() {
+      window.open(this.fileFinalDocument);
+    },
+    sendFinalDocumentByEmail() {
+      this.$axios.post('/adminarea/registration/send_final_document', {uuid: this.uuid})
+        .then(response => {                             
+              if (response.data.status === "OK") {
+                console.log(response.data.results.infoEmail);  
+                this.makeToast(response.data.msg);
+              }                                     
+          })
+          .catch(error => {                              
+              console.log(error);
+              this.makeToast("Si è verificato un errore");
+          });
+    },
+    getAllServiceTemplates() {
+      this.$axios.post('/adminarea/serviceTemplate/getall', {})
           .then(response => {                             
-                if (response.data.status === "OK") {                                        
+                if (response.data.status === "OK") {                  
+                    this.serviceTemplates = response.data.serviceTemplates; 
+                    console.log(this.serviceTemplates);
                     this.makeToast(response.data.msg);                       
                 }                                     
             })
             .catch(error => {                              
                 console.log(error);
-            });  
-      },
-      getUuid() {        
-        this.$axios.post('/adminarea/get_uuid', {})
-          .then(response => {                             
-                if (response.data.status === "OK") {                                        
-                    this.uuid=response.data.results.uuid;
-                }                                     
-            })
-            .catch(error => {                              
-                console.log(error);
-            });  
-      },
-      makeToast(string) {        
-        this.$q.notify({color: 'green-4', textColor: 'white', icon: 'info', message: string});
-      } 
+            });
+    },
+    getSelectedServiceTemplate() {
+        if(this.selectedServicesTemplate.length) {
+        var price=0, vat=0, total=0;
+        this.selectedServicesTemplate.forEach((element, index, array) => {
+          console.log(element)
+          price+=element.price;
+          vat+=(element.price*element.vat)/100;
+          total=price+vat;
+          
+          if(index===this.selectedServicesTemplate-1) {
+            this.valueContract={"price": price, "vat": vat, "total": total};
+          }
+        });      
+      }
+      this.valueContract={price: 0, vat: 0, total: 0};           
+    },
+    async captureCiFront () {
+      const image = await Camera.getPhoto({width: 600, height: 350, quality: 100, allowEditing: true, resultType: CameraResultType.base64});
+      this.imageCiFront = "data:image/png;base64, "+image.base64String;  
+      this.uploadIdentityDocumentImage("CiFront-"+this.uuid, image.base64String);
+    },
+    async captureCiBack () {
+      const image = await Camera.getPhoto({width: 600, height: 350, quality: 100, allowEditing: true, resultType: CameraResultType.base64});
+      this.imageCiBack = "data:image/png;base64, "+image.base64String; 
+      this.uploadIdentityDocumentImage("CiBack-"+this.uuid, image.base64String);
+    },
+    async captureCfFront () {
+      const image = await Camera.getPhoto({width: 600, height: 350, quality: 100, allowEditing: true, resultType: CameraResultType.base64});
+      this.imageCfFront = "data:image/png;base64, "+image.base64String    
+      this.uploadIdentityDocumentImage("CfFront-"+this.uuid, image.base64String);
+    },
+    async captureCfBack () {
+      const image = await Camera.getPhoto({width: 600, height: 350, quality: 100, allowEditing: true, resultType: CameraResultType.base64});
+      this.imageCfBack = "data:image/png;base64, "+image.base64String;
+      this.uploadIdentityDocumentImage("CfBack-"+this.uuid, image.base64String);    
+    },
+    uploadCiFront(file) {
+      let fileName="CiFront-"+this.uuid+".jpg";
+      this.uploadIdentityDocumentFile(fileName,file);
+    },
+    uploadCiBack(file) {
+      let fileName="CiBack-"+this.uuid+".jpg";
+      this.uploadIdentityDocumentFile(fileName,file);
+    },
+    uploadCfFront(file) {
+      let fileName="CfFront-"+this.uuid+".jpg";
+      this.uploadIdentityDocumentFile(fileName,file);
+    },
+    uploadCfBack(file) {
+      let fileName="CfBack-"+this.uuid+".jpg";
+      this.uploadIdentityDocumentFile(fileName,file);
+    },
+    uploadIdentityDocumentImage(imageName, imageData) {
+      let data = new FormData();
+      data.append('imageName', imageName);
+      data.append('file', imageData); 
+      this.$axios.post('/adminarea/upload/identity_document/image', data, {header : {'Content-Type' : 'image/png'}})
+        .then(response => {                             
+              if (response.data.status === "OK") {                                        
+                  this.makeToast(response.data.msg);                       
+              }                                     
+          })
+          .catch(error => {                              
+              console.log(error);
+              this.makeToast("Si è verificato un errore");
+          });  
+    },
+    uploadIdentityDocumentFile (fileName, file) {
+      let data = new FormData();
+      data.append('fileName', fileName);
+      data.append('file', file[0]);      
+      this.$axios.post('/adminarea/upload/identity_document/file', data, {headers: {'Content-Type': 'multipart/form-data'}})
+      .then(response => {                             
+            if (response.data.status === "OK") {                                        
+                this.makeToast(response.data.msg);                       
+            }                                     
+        })
+        .catch(error => {                              
+            console.log(error);
+            this.makeToast("Si è verificato un errore");
+        });   
+    },
+    getUuid() {        
+      this.$axios.post('/adminarea/get_uuid', {})
+        .then(response => {                             
+              if (response.data.status === "OK") {                                        
+                  this.uuid=response.data.results.uuid;
+              }                                     
+          })
+          .catch(error => {                              
+              console.log(error);
+          });  
+    },
+    makeToast(string) {        
+      this.$q.notify({color: 'green-4', textColor: 'white', icon: 'info', message: string});
+    } 
   },
   mounted() {
     validator.setup(); 
@@ -490,7 +629,8 @@ export default {
     }),
     components: {
       ValidationProvider,
-      ValidationObserver
+      ValidationObserver,
+      pdf
     },
     beforeRouteEnter(to, from, next) {
     var currentUser = Store.state.user;

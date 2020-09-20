@@ -19,6 +19,7 @@
     "vee-validate": "^3.3.9",
     "vue-d3-network": "^0.1.28",
     "vue-i18n": "^8.0.0",
+    "vue-pdf": "^4.1.0",
     "vuelidate": "^0.7.5",
     "vuex-router-sync": "^5.0.0"
   },
