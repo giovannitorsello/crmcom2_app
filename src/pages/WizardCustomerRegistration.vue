@@ -472,13 +472,17 @@ export default {
   methods: {      
     nextStep() {    
       if(this.step<this.stepMax) this.step++;
-      if(this.step==8) this.generateFinalDocuments();
+      if(this.step==8) this.generateFinalDocument();
     },
     prevStep() {
       if(this.step>=2) this.step--;
     },
-    generateFinalDocuments() {
-      this.$axios.post('/adminarea/registration/generate_final_document', {uuid: this.uuid})
+    generateFinalDocument() {
+      this.selectedCustomer.uuid=this.uuid;
+      this.$axios.post('/adminarea/registration/generate_final_document', {
+          customer: this.selectedCustomer,
+          contract: this.selectedContract
+        })
         .then(response => {                             
               if (response.data.status === "OK") {  
                 this.fileFinalDocument=response.data.results.urlFinalDocument;
@@ -495,12 +499,19 @@ export default {
       window.open(this.fileFinalDocument);
     },
     sendFinalDocumentByEmail() {
-      this.$axios.post('/adminarea/registration/send_final_document', {uuid: this.uuid})
+      this.selectedCustomer.uuid=this.uuid;
+      this.$axios.post('/adminarea/registration/send_final_document', {
+          customer: this.selectedCustomer,
+          contract: this.selectedContract
+        })
         .then(response => {                             
               if (response.data.status === "OK") {
                 console.log(response.data.results.infoEmail);  
                 this.makeToast(response.data.msg);
-              }                                     
+              }
+              else{
+                this.makeToast("Si è verificato un errore.");
+              }                                  
           })
           .catch(error => {                              
               console.log(error);
@@ -620,7 +631,8 @@ export default {
   mounted() {
     validator.setup(); 
     this.getAllServiceTemplates();  
-    this.getUuid();  
+    this.getUuid();
+    this.selectedCustomer.uuid=this.uuid;
   },
   computed: mapState({
     user: 'user',
