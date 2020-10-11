@@ -25,39 +25,43 @@ const Store = new Vuex.Store({
     invoiceEntry: {},
     deviceCustomer: {},
     deviceBackbone: {},
-    siteBackbone: {}
+    siteBackbone: {},
+    olo: {}
   },
   getters: {},
   mutations: {
     changeUser(state, usr) {
-      state.user = usr
+      state.user = usr;
     },
     changeCustomer(state, cst) {
-      state.customer = cst
+      state.customer = cst;
     },
     changeContract(state, ctr) {
-      state.contract = ctr
+      state.contract = ctr;
     },
     changeDeviceCustomer(state, dev) {
-      state.deviceCustomer = dev
+      state.deviceCustomer = dev;
     },
     changeService(state, srv) {
-      state.service = srv
+      state.service = srv;
     },
     changeServiceTemplate(state, srv) {
-      state.serviceTemplate = srv
+      state.serviceTemplate = srv;
     },
     changeInvoice(state, inv) {
-      state.invoice = inv
+      state.invoice = inv;
     },
     changeInvoiceEntry(state, invEntry) {
-      state.invoiceEntry = invEntry
+      state.invoiceEntry = invEntry;
     },
     changeDeviceBackbone(state, dev) {
-      state.deviceBackbone = dev
+      state.deviceBackbone = dev;
     },
     changeSiteBackbone(state, site) {
-      state.siteBackbone = site
+      state.siteBackbone = site;
+    },
+    changeOlo(state, olo) {
+      state.olo = olo;
     }
   },
   actions: {},

@@ -8,6 +8,7 @@ const allPages=[
   { path: '/User', component: () => import('pages/User.vue') },
   { path: '/Customer', component: () => import('pages/Customer.vue') },
   { path: '/Contract', component: () => import('pages/Contract.vue') },
+  { path: '/Olo', component: () => import('pages/Olo.vue') },
   { path: '/ViewData', component: () => import('pages/ViewData.vue') },
   { path: '/ServiceContract', component: () => import('pages/ServiceContract.vue') },
   { path: '/ServiceTemplate', component: () => import('pages/ServiceTemplate.vue') },

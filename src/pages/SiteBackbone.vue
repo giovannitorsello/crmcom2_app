@@ -180,6 +180,7 @@ export default {
   },
   data() {
     return {
+      isConnected: false,
       siteFilter: "",
       initialPagination: {
         sortBy: "desc",

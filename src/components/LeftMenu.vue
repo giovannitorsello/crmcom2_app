@@ -73,6 +73,12 @@ export default {
           name: "Utenti",
           route: "/User",
           type: "settings"
+        },
+        {
+          id: 9,
+          name: "Olo companies",
+          route: "/Olo",
+          type: "settings"
         }
       ];
     }
