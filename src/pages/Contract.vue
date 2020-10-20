@@ -2,44 +2,97 @@
   <div id="contracts">
     <h6>
       Gestione contratti
-      <strong>{{customerDescription}}</strong>
+      <strong>{{ customerDescription }}</strong>
     </h6>
-    <img src="/img/actions/new.png" @click="newContract" style="width: 48px; height: 48px;" />
-    <img src="/img/actions/save.png" @click="saveContract" style="width: 48px; height: 48px;" />
-    <img src="/img/actions/delete.png" @click="deleteContract" style="width: 48px; height: 48px;" />
-    <img src="/img/actions/exit.png" @click="exit" style="width: 48px; height: 48px;" />
+    <img
+      src="/img/actions/new.png"
+      @click="newContract"
+      style="width: 48px; height: 48px"
+    />
+    <img
+      src="/img/actions/save.png"
+      @click="saveContract"
+      style="width: 48px; height: 48px"
+    />
+    <img
+      src="/img/actions/delete.png"
+      @click="deleteContract"
+      style="width: 48px; height: 48px"
+    />
+    <img
+      src="/img/actions/exit.png"
+      @click="exit"
+      style="width: 48px; height: 48px"
+    />
 
     <ValidationObserver ref="FormDeviceCustomer">
-    <q-form ref="contractForm" class="q-gutter-md">
-      <div class="row">
-        <div class="col">
-          <ValidationProvider name="Descrizione" immediate rules="required|alpha_space" v-slot="{ errors }">
-            <q-input label="Descrizione" v-model="selectedContract.description" />
-            <span class="error">{{ errors[0] }}</span>
-          </ValidationProvider>
-          <ValidationProvider name="Indirizzo" immediate rules="required|address" v-slot="{ errors }">
-            <q-input label="Indirizzo" v-model="selectedContract.address" />
-            <span class="error">{{ errors[0] }}</span>
-          </ValidationProvider>
+      <q-form ref="contractForm" class="q-gutter-md">
+        <div class="row">
+          <div class="col">
+            <ValidationProvider
+              name="Descrizione"
+              immediate
+              rules="required|alpha_space"
+              v-slot="{ errors }"
+            >
+              <q-input
+                label="Descrizione"
+                v-model="selectedContract.description"
+              />
+              <span class="error">{{ errors[0] }}</span>
+            </ValidationProvider>
+            <ValidationProvider
+              name="Indirizzo"
+              immediate
+              rules="required|address"
+              v-slot="{ errors }"
+            >
+              <q-input label="Indirizzo" v-model="selectedContract.address" />
+              <span class="error">{{ errors[0] }}</span>
+            </ValidationProvider>
+          </div>
         </div>
-      </div>
-      <div class="row">
-        <div class="col">
-          <ValidationProvider name="Durata in giorni" immediate rules="required|number" v-slot="{ errors }">
-            <q-input label="Durata in giorni" v-model="selectedContract.duration" />
-            <span class="error">{{ errors[0] }}</span>
-          </ValidationProvider>
-          <ValidationProvider name="Durata in giorni" immediate rules="required" v-slot="{ errors }">          
-            <q-checkbox label="Rinnovo Automatico" v-model="selectedContract.automaticRenew" />
-            <span class="error">{{ errors[0] }}</span>
-          </ValidationProvider>
-          <ValidationProvider name="Durata in giorni" immediate rules="required" v-slot="{ errors }">          
-            <q-checkbox label="Da fatturare" v-model="selectedContract.businnessFlag" />
-             <span class="error">{{ errors[0] }}</span>
-          </ValidationProvider>
+        <div class="row">
+          <div class="col">
+            <ValidationProvider
+              name="Durata in giorni"
+              immediate
+              rules="required|number"
+              v-slot="{ errors }"
+            >
+              <q-input
+                label="Durata in giorni"
+                v-model="selectedContract.duration"
+              />
+              <span class="error">{{ errors[0] }}</span>
+            </ValidationProvider>
+            <ValidationProvider
+              name="Durata in giorni"
+              immediate
+              rules="required"
+              v-slot="{ errors }"
+            >
+              <q-checkbox
+                label="Rinnovo Automatico"
+                v-model="selectedContract.automaticRenew"
+              />
+              <span class="error">{{ errors[0] }}</span>
+            </ValidationProvider>
+            <ValidationProvider
+              name="Durata in giorni"
+              immediate
+              rules="required"
+              v-slot="{ errors }"
+            >
+              <q-checkbox
+                label="Da fatturare"
+                v-model="selectedContract.businnessFlag"
+              />
+              <span class="error">{{ errors[0] }}</span>
+            </ValidationProvider>
+          </div>
         </div>
-      </div>
-    </q-form>
+      </q-form>
     </ValidationObserver>
 
     <div class="row">
@@ -54,7 +107,7 @@
           <img
             src="/img/actions/new.png"
             alt="seleziona"
-            style="width: 32px; height: 32px; xfill:greenyellow;"
+            style="width: 32px; height: 32px; xfill: greenyellow"
             v-on:click="addService()"
           />
         </div>
@@ -74,7 +127,9 @@
         <template v-slot:header="props">
           <q-tr :props="props">
             <q-th auto-width />
-            <q-th v-for="col in props.cols" :key="col.name" :props="props">{{ col.label }}</q-th>
+            <q-th v-for="col in props.cols" :key="col.name" :props="props">{{
+              col.label
+            }}</q-th>
           </q-tr>
         </template>
         <template v-slot:body="props">
@@ -82,26 +137,28 @@
             <q-td auto-width>
               <img
                 src="/img/actions/open.png"
-                style="width: 32px; height: 32px;"
+                style="width: 32px; height: 32px"
                 v-on:click="openService(props.row)"
               />
               <img
                 src="/img/actions/unlocked.png"
-                style="width: 32px; height: 32px; xfill:green;"
+                style="width: 32px; height: 32px; xfill: green"
                 v-on:click="activateService(props.row)"
               />
               <img
                 src="/img/actions/locked.png"
-                style="width: 32px; height: 32px; xfill:red;"
+                style="width: 32px; height: 32px; xfill: red"
                 v-on:click="suspendService(props.row)"
               />
               <img
                 src="/img/actions/delete.png"
-                style="width: 32px; height: 32px; xfill: gray;"
+                style="width: 32px; height: 32px; xfill: gray"
                 v-on:click="deleteService(props.row)"
               />
             </q-td>
-            <q-td v-for="col in props.cols" :key="col.name" :props="props">{{ col.value }}</q-td>
+            <q-td v-for="col in props.cols" :key="col.name" :props="props">{{
+              col.value
+            }}</q-td>
           </q-tr>
         </template>
       </q-table>
@@ -121,7 +178,9 @@
         <template v-slot:header="props">
           <q-tr :props="props">
             <q-th auto-width />
-            <q-th v-for="col in props.cols" :key="col.name" :props="props">{{ col.label }}</q-th>
+            <q-th v-for="col in props.cols" :key="col.name" :props="props">{{
+              col.label
+            }}</q-th>
           </q-tr>
         </template>
         <template v-slot:body="props">
@@ -129,26 +188,28 @@
             <q-td auto-width>
               <img
                 src="/img/actions/open.png"
-                style="width: 32px; height: 32px;"
+                style="width: 32px; height: 32px"
                 v-on:click="openDevice(props.row)"
               />
               <img
                 src="/img/actions/unlocked.png"
-                style="width: 32px; height: 32px; xfill:green;"
+                style="width: 32px; height: 32px; xfill: green"
                 v-on:click="activateDevice(props.row)"
               />
               <img
                 src="/img/actions/locked.png"
-                style="width: 32px; height: 32px; xfill:red;"
+                style="width: 32px; height: 32px; xfill: red"
                 v-on:click="suspendDevice(props.row)"
               />
               <img
                 src="/img/actions/delete.png"
-                style="width: 32px; height: 32px; xfill: gray;"
+                style="width: 32px; height: 32px; xfill: gray"
                 v-on:click="deleteDevice(props.row)"
               />
             </q-td>
-            <q-td v-for="col in props.cols" :key="col.name" :props="props">{{ col.value }}</q-td>
+            <q-td v-for="col in props.cols" :key="col.name" :props="props">{{
+              col.value
+            }}</q-td>
           </q-tr>
         </template>
       </q-table>
@@ -310,10 +371,23 @@ export default {
       },
       activateDevice(dev) {
         dev.state="active";
+        //Enable device in database
         this.$axios.post('/adminarea/deviceCustomer/update', {device: dev})
           .then(response => {                
                 if (response.data.status === "OK") {                  
-                    this.makeToast("Dispositivo attivo");                  
+                    this.makeToast("Dispositivo attivo");
+                    //Enable device in firewall
+                    this.$axios.post('/adminarea/deviceCustomer/enable', {device: dev})
+                      .then(response => {                
+                            if (response.data.status === "OK") {                  
+                                this.makeToast("Dispositivo abilitato nel firewall");              
+                            }
+                            else this.makeToast(response.data.msg);                               
+                        })
+                        .catch(error => {                              
+                            console.log(error);
+                            this.makeToast("Errore di comunicazione con il firewall");
+                        });
                 }                                     
             })
             .catch(error => {                              
@@ -322,10 +396,23 @@ export default {
       },
       suspendDevice(dev) {        
         dev.state="suspended";
+        //Disable device in database
         this.$axios.post('/adminarea/deviceCustomer/update', {device: dev})
           .then(response => {                
                 if (response.data.status === "OK") {                  
-                     this.makeToast("Dispositivo sospeso");              
+                    this.makeToast("Dispositivo sospeso");
+                    //Disable device on firewall
+                    this.$axios.post('/adminarea/deviceCustomer/disable', {device: dev})
+                      .then(response => {                
+                            if (response.data.status === "OK") {                  
+                                this.makeToast("Dispositivo disabilitato nel firewall");              
+                            }
+                            else this.makeToast(response.data.msg);
+                        })
+                        .catch(error => {                              
+                            console.log(error);
+                            this.makeToast("Errore di comunicazione con il firewall");
+                        });             
                 }                                     
             })
             .catch(error => {                              

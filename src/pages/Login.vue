@@ -30,7 +30,7 @@ import { mapState } from 'vuex'
 
 export default {
   data() {
-    return { username: 'installatore', password: 'installatore', accept: false}
+    return { username: 'admin', password: 'admin', accept: false}
   },
   methods: {
     onSubmit () {
