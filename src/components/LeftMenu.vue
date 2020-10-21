@@ -64,8 +64,8 @@ export default {
         },
         {
           id: 7,
-          name: "Server di notifica",
-          route: "/ServerNotify",
+          name: "Impostazioni generali",
+          route: "/GeneralSettings",
           type: "settings"
         },
         {

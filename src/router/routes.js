@@ -1,6 +1,6 @@
 
 const allPages=[
-  { path: '/AdminDashboard', component: () => import('pages/customHomePage/AdminDashboard.vue') },
+  { path: '/AdminDashboard', component: () => import('pages/customHomePage/AdminDashboard.vue') },  
   { path: '/ManagerDashboard', component: () => import('pages/customHomePage/ManagerDashboard.vue') },
   { path: '/TechnicianDashboard', component: () => import('pages/customHomePage/TechnicianDashboard.vue') },
   { path: '/InstallerDashboard', component: () => import('pages/customHomePage/InstallerDashboard.vue') },
@@ -10,6 +10,7 @@ const allPages=[
   { path: '/Contract', component: () => import('pages/Contract.vue') },
   { path: '/Olo', component: () => import('pages/Olo.vue') },
   { path: '/ViewData', component: () => import('pages/ViewData.vue') },
+  { path: '/GeneralSettings', component: () => import('pages/GeneralSettings.vue') },
   { path: '/ServiceContract', component: () => import('pages/ServiceContract.vue') },
   { path: '/ServiceTemplate', component: () => import('pages/ServiceTemplate.vue') },
   { path: '/DeviceCustomer', component: () => import('pages/DeviceCustomer.vue') },
@@ -18,6 +19,7 @@ const allPages=[
   { path: '/MonitorDevicesCustomer', component: () => import('pages/MonitorDeviceCustomer.vue') },
   { path: '/MonitorDevicesBackbone', component: () => import('pages/MonitorDeviceBackbone.vue') },
   { path: '/WizardCustomerRegistration', component: () => import('pages/WizardCustomerRegistration.vue') }
+  
 ];
 
 const routes = [
