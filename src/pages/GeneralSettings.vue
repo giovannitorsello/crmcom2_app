@@ -1,8 +1,7 @@
 <template>
   <div id="device">
     <h6>
-      Gestione impostazioni generali
-      <strong>{{ customerDescription }}</strong>
+      Gestione impostazioni generali      
     </h6>
     <q-btn
       @click="generateCsvFiles"
@@ -13,6 +12,13 @@
     />
     <q-btn @click="reloadFirewallRules" color="green" icon="send" label="Ricarica regole di firewall" />
     <q-btn @click="reloadBandwidthRules" color="blue" icon="send" label="Ricarica regole di banda" />
+    <div class="row">
+      <div class="col">
+        <p>{{scriptData.script}}</p>
+        <p>{{scriptData.out}}</p>
+      </div>
+    </div>
+    
   </div>
 </template>
 
@@ -26,7 +32,7 @@ import companyassetsJson from '../config/companyassets.json'
 export default {
   data() {
     return {
-                       
+      scriptData: {},      
     }
   },
   components: {
@@ -36,8 +42,8 @@ export default {
   methods: {
     generateCsvFiles: function() {
       this.$axios.post('/adminarea/firewall/generate/csv/files', {})
-        .then((response) => {      
-            this.makeToast(response.data.msg);                                              
+        .then((response) => {  
+            this.makeToast(response.data.msg);                                                       
           })
           .catch(error => {                              
               console.log(error);
@@ -45,7 +51,9 @@ export default {
     },
     reloadFirewallRules: function() {
       this.$axios.post('/adminarea/firewall/reload/rules', {})
-        .then((response) => {      
+        .then((response) => {
+          console.log(response);
+            this.scriptData=response.data.result;
             this.makeToast(response.data.msg);                                              
           })
           .catch(error => {                              
@@ -54,7 +62,8 @@ export default {
     },
     reloadBandwidthRules: function() {
       this.$axios.post('/adminarea/firewall/reload/bandwidth', {})
-        .then((response) => {      
+        .then((response) => {
+            this.scriptData=response.data.result;      
             this.makeToast(response.data.msg);                                              
           })
           .catch(error => {                              
