@@ -31,7 +31,7 @@ function createWindow () {
       nodeIntegrationInWorker: process.env.QUASAR_NODE_INTEGRATION,
 
       // More info: /quasar-cli/developing-electron-apps/electron-preload-script
-      // preload: path.resolve(__dirname, 'electron-preload.js')
+      // preload: path.resolve(process.cwd(), 'electron-preload.js')
     }
   })
 
