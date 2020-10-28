@@ -44,7 +44,7 @@
           </ValidationProvider>          
         </div>
         <div class="col">
-          <ValidationProvider name="Telfono mobile" immediate rules="required|phone" v-slot="{ errors }">
+          <ValidationProvider name="Telefono mobile" immediate rules="required|phone" v-slot="{ errors }">
             <q-input label="Telefono mobile" v-model="selectedUser.mobilephone" />
             <span class="error">{{ errors[0] }}</span>
           </ValidationProvider>          
@@ -67,7 +67,6 @@
             <q-select label="Ruolo" @input="changeRole" :options="roles" v-model="selectedRole" />
             <span class="error">{{ errors[0] }}</span>
           </ValidationProvider>          
-
         </div>
       </div>
     </q-form>

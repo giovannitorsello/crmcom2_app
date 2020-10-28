@@ -236,7 +236,7 @@ export default {
         columnsTableServices: [
                   {name: "actions", label: "Azioni"},
                   {name: "state",       label: "Stato",          field: row => row.state, sortable: true}, 
-                  {name: "description", label: "Descrizione",    field: row => row.service_description, sortable: true},
+                  {name: "description", label: "Descrizione",    field: row => row.description, sortable: true},
                   {name: "price",       label: "Prezzo",         field: row => row.price}, 
                   {name: "vat",         label: "IVA",            field: row => row.vat},                  
                   ],

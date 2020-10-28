@@ -5,17 +5,17 @@
     <img
       src="/img/actions/new.png"
       v-on:click="newServiceTemplate()"
-      style="width: 32px; height: 32px;"
+      style="width: 32px; height: 32px"
     />
     <img
       src="/img/actions/save.png"
       v-on:click="saveServiceTemplate()"
-      style="width: 32px; height: 32px;"
+      style="width: 32px; height: 32px"
     />
     <img
       src="/img/actions/delete.png"
       v-on:click="deleteServiceTemplate()"
-      style="width: 32px; height: 32px;"
+      style="width: 32px; height: 32px"
     />
     <ValidationObserver ref="formServiceTemplate">
       <q-form ref="serviceForm" class="q-gutter-md">
@@ -27,7 +27,27 @@
               rules="required|alpha_spaces"
               v-slot="{ errors }"
             >
-              <q-input label="Descrizione" v-model="selectedServiceTemplate.description" />
+              <q-input
+                label="Descrizione"
+                v-model="selectedServiceTemplate.description"
+              />
+              <span class="error">{{ errors[0] }}</span>
+            </ValidationProvider>
+          </div>
+          <div class="col">
+            <ValidationProvider
+              name="Category"
+              immediate
+              rules="required"
+              v-slot="{ errors }"
+            >
+              <q-select
+                filled
+                label="Categoria"
+                @input="changeCategory"
+                :options="serviceCategories"
+                v-model="selectedCategory"
+              />
               <span class="error">{{ errors[0] }}</span>
             </ValidationProvider>
           </div>
@@ -46,7 +66,7 @@
             <ValidationProvider
               name="Intervallo di fatturazione"
               immediate
-              rules="required|number"
+              rules="required|integer"
               v-slot="{ errors }"
             >
               <q-input
@@ -60,13 +80,23 @@
 
         <div class="row">
           <div class="col">
-            <ValidationProvider name="Prezzo" immediate rules="required|number" v-slot="{ errors }">
+            <ValidationProvider
+              name="Prezzo"
+              immediate
+              rules="required|integer"
+              v-slot="{ errors }"
+            >
               <q-input label="Prezzo" v-model="selectedServiceTemplate.price" />
               <span class="error">{{ errors[0] }}</span>
             </ValidationProvider>
           </div>
           <div class="col">
-            <ValidationProvider name="IVA" immediate rules="required|number" v-slot="{ errors }">
+            <ValidationProvider
+              name="IVA"
+              immediate
+              rules="required|integer"
+              v-slot="{ errors }"
+            >
               <q-input label="IVA" v-model="selectedServiceTemplate.vat" />
               <span class="error">{{ errors[0] }}</span>
             </ValidationProvider>
@@ -78,7 +108,7 @@
             <ValidationProvider
               name="G. avviso fattura"
               immediate
-              rules="required|number"
+              rules="required|integer"
               v-slot="{ errors }"
             >
               <q-input
@@ -94,7 +124,7 @@
             <ValidationProvider
               name="G. mancato pagamento"
               immediate
-              rules="required|number"
+              rules="required|integer"
               v-slot="{ errors }"
             >
               <q-input
@@ -110,7 +140,7 @@
             <ValidationProvider
               name="G. disatt. servizi"
               immediate
-              rules="required|number"
+              rules="required|integer"
               v-slot="{ errors }"
             >
               <q-input
@@ -125,13 +155,22 @@
     </ValidationObserver>
 
     <q-table
+      title="Modelli di servizio"
       :data="serviceTemplates"
       :columns="columnsTableServiceTemplates"
       :pagination="initialPagination"
       :filter="txtFilter"
+      row-key="id"
+      virtual-scroll
     >
       <template v-slot:top-right>
-        <q-input borderless dense debounce="300" v-model="txtFilter" placeholder="Ricerca">
+        <q-input
+          borderless
+          dense
+          debounce="300"
+          v-model="txtFilter"
+          placeholder="Ricerca"
+        >
           <q-icon slot="append" name="search" />
         </q-input>
       </template>
@@ -139,7 +178,9 @@
       <template v-slot:header="props">
         <q-tr :props="props">
           <q-th auto-width />
-          <q-th v-for="col in props.cols" :key="col.name" :props="props">{{ col.label }}</q-th>
+          <q-th v-for="col in props.cols" :key="col.name" :props="props">{{
+            col.label
+          }}</q-th>
         </q-tr>
       </template>
 
@@ -148,22 +189,22 @@
           <q-td auto-width>
             <img
               src="/img/actions/open.png"
-              style="width: 32px; height: 32px; fill:greenyellow;"
+              style="width: 32px; height: 32px; fill: greenyellow"
               v-on:click="selectServiceTemplate(props.row)"
             />
             <img
               src="/img/actions/unlocked.png"
-              style="width: 32px; height: 32px; xfill:green;"
+              style="width: 32px; height: 32px; xfill: green"
               v-on:click="activateServiceTemplate(props.row)"
             />
             <img
               src="/img/actions/locked.png"
-              style="width: 32px; height: 32px; xfill:red;"
+              style="width: 32px; height: 32px; xfill: red"
               v-on:click="suspendServiceTemplate(props.row)"
             />
             <img
               src="/img/actions/delete.png"
-              style="width: 32px; height: 32px; xfill: gray;"
+              style="width: 32px; height: 32px; xfill: gray"
               v-on:click="deleteServiceTemplate(props.row)"
             />
           </q-td>
@@ -185,10 +226,12 @@ export default {
       return {
         selectedServiceTemplate: {},
         serviceTemplates: [],
+        serviceCategories: [],
+        selectedCategory: {label: "Internet", value: "Internet", icon: ''},
         txtFilter: "",
         initialPagination: {
           sortBy: "desc",
-          descending: false,
+          descending: true,
           page: 2,
           rowsPerPage: 5
         },
@@ -204,6 +247,12 @@ export default {
             name: "code",
             label: "Codice",
             field: "code",          
+            sortable: true
+          },
+          {
+            name: "category",
+            label: "Categoria",
+            field: "category",
             sortable: true
           },
           {
@@ -239,22 +288,38 @@ export default {
   },
   methods: {
     getServiceTemplateData: function() {
-        console.log("Selected service template");
-        console.log(this.selectedServiceTemplate); 
         this.getAllServiceTemplates();
+        this.getAllServiceCategories();
     },
     getAllServiceTemplates: function() {
+      this.serviceTemplates=[];
         this.$axios.post('/adminarea/serviceTemplate/getall', {})
             .then(response => {                             
-                  if (response.data.status === "OK") {                  
-                      this.serviceTemplates = response.data.serviceTemplates; 
-                      console.log(this.serviceTemplates);
+                  if (response.data.status === "OK") {            
+                    this.serviceTemplates = response.data.serviceTemplates;  
+                    this.makeToast(response.data.msg);                       
+                  }                                     
+              })
+              .catch(error => {                              
+                  console.log(error);
+              });
+    },
+    getAllServiceCategories: function() {
+        this.$axios.post('/adminarea/serviceTemplate/getAllServiceCategories', {})
+            .then(response => {                             
+                  if (response.data.status === "OK") {                                         
+                      response.data.serviceCategories.forEach(element => {
+                        this.serviceCategories.push({label: element.description, value: element.value, icon: ''})                        
+                      });
                       this.makeToast(response.data.msg);                       
                   }                                     
               })
               .catch(error => {                              
                   console.log(error);
               });
+    },
+    changeCategory: function() {
+
     },
     newServiceTemplate: function (){
       this.selectedServiceTemplate.id=null;
@@ -264,9 +329,13 @@ export default {
         let relUrl="";
         if((!this.selectedServiceTemplate.id) || (this.selectedServiceTemplate.id==="")) {
           relUrl='/adminarea/serviceTemplate/insert'; 
-          this.selectedServiceTemplate.state="active"; //New services starts active
+          this.selectedServiceTemplate.state="active"; //New services start active          
         }
         else relUrl='/adminarea/serviceTemplate/update'
+
+        //Set or update category
+        this.selectedServiceTemplate.category=this.selectedCategory.label;
+        
         this.$axios.post(relUrl, {serviceTemplate: this.selectedServiceTemplate})
             .then(response => {                
                   if (response.data.status === "OK") {                  
@@ -344,7 +413,6 @@ export default {
     },
     beforeRouteEnter(to, from, next) {
     var currentUser = Store.state.user;
-    console.log(currentUser);
     if (currentUser.role === "admin")
       next();
     else next("/Login");
