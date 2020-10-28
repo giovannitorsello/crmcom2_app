@@ -1,36 +1,35 @@
 <template>
   <div id="customers">
-    <h5>Inserimento guidato cliente ({{uuid}})</h5>
-    <h6 v-if="step==1">
+    <h5>Inserimento guidato cliente ({{ uuid }})</h5>
+    <h6 v-if="step == 1">
       <b>Configurazione contratto:</b> Tipo di cliente privato o azienda?
     </h6>
-    <h6 v-if="step==2">
+    <h6 v-if="step == 2">
       <b>Configurazione contratto:</b> Inserisci i dati del cliente
     </h6>
-    <h6 v-if="step==3">
+    <h6 v-if="step == 3">
       <b>Configurazione contratto:</b> Indirizzo postale cliente (domicilio)
     </h6>
-    <h6 v-if="step==4">
+    <h6 v-if="step == 4">
       <b>Configurazione contratto:</b> Contatti telefono ed email
     </h6>
-    <h6 v-if="step==5">
-      <b>Configurazione contratto:</b> Seleziona i servizi da attivare e l'indirizzo completo del contratto.
+    <h6 v-if="step == 5">
+      <b>Configurazione contratto:</b> Seleziona i servizi da attivare e
+      l'indirizzo completo del contratto.
     </h6>
-    <h6 v-if="step==6">
+    <h6 v-if="step == 6">
       <b>Configurazione contratto:</b> Documento di identità cliente
     </h6>
-    <h6 v-if="step==7">
+    <h6 v-if="step == 7">
       <b>Configurazione contratto:</b>Codice fiscale cliente
     </h6>
-    <h6 v-if="step==8">
-      <b>Configurazione contratto:</b>Controlli finali
-    </h6>
+    <h6 v-if="step == 8"><b>Configurazione contratto:</b>Controlli finali</h6>
 
     <div id="dataFormDiv" style="padding-bottom: 100px;">
       <ValidationObserver ref="formCustomer">
         <q-form ref="customerFrom" class="q-gutter-md">
           <!--Step 1 - scelta tipo cliente -->
-          <div class="row" v-if="step==1">
+          <div class="row" v-if="step == 1">
             <div class="col-auto">
               <q-btn-toggle
                 v-model="isCompany"
@@ -38,13 +37,16 @@
                 no-caps
                 rounded
                 unelevated
-                :options="[{label: 'Privato', value: false},{label: 'Azienda', value: true},]"
+                :options="[
+                  { label: 'Privato', value: false },
+                  { label: 'Azienda', value: true }
+                ]"
               />
             </div>
           </div>
 
           <!--Step 2 - Intestatario contratto azienda/privato -->
-          <div id="companyFields" v-if="(isCompany) && (step==2)">
+          <div id="companyFields" v-if="isCompany && step == 2">
             <div class="row">
               <div class="col">
                 <ValidationProvider
@@ -53,7 +55,10 @@
                   rules="required"
                   v-slot="{ errors }"
                 >
-                  <q-input label="Denominazione Azienda" v-model="selectedCustomer.company" />
+                  <q-input
+                    label="Denominazione Azienda"
+                    v-model="selectedCustomer.company"
+                  />
                   <span class="error">{{ errors[0] }}</span>
                 </ValidationProvider>
 
@@ -63,7 +68,10 @@
                   rules="required|address"
                   v-slot="{ errors }"
                 >
-                  <q-input label="Indirizzo Sede Azienda" v-model="selectedCustomer.companyaddress">
+                  <q-input
+                    label="Indirizzo Sede Azienda"
+                    v-model="selectedCustomer.companyaddress"
+                  >
                     <a>Aiuto sulla compilazione</a>
                   </q-input>
                   <span class="error">{{ errors[0] }}</span>
@@ -86,8 +94,15 @@
             </div>
             <div class="row">
               <div class="col">
-                <ValidationProvider name="Partita IVA" rules="required|vatcode" v-slot="{ errors }">
-                  <q-input label="Partita IVA" v-model="selectedCustomer.vatcode" />
+                <ValidationProvider
+                  name="Partita IVA"
+                  rules="required|vatcode"
+                  v-slot="{ errors }"
+                >
+                  <q-input
+                    label="Partita IVA"
+                    v-model="selectedCustomer.vatcode"
+                  />
                   <span class="error">{{ errors[0] }}</span>
                 </ValidationProvider>
 
@@ -96,12 +111,23 @@
                   rules="required|alpha_num"
                   v-slot="{ errors }"
                 >
-                  <q-input label="Codice Univoco SDI" v-model="selectedCustomer.sdicode" />
+                  <q-input
+                    label="Codice Univoco SDI"
+                    v-model="selectedCustomer.sdicode"
+                  />
                   <span class="error">{{ errors[0] }}</span>
                 </ValidationProvider>
 
-                <ValidationProvider name="Email PEC" rules="required|email" v-slot="{ errors }">
-                  <q-input label="Email PEC" v-model="selectedCustomer.companypec" type="email" />
+                <ValidationProvider
+                  name="Email PEC"
+                  rules="required|email"
+                  v-slot="{ errors }"
+                >
+                  <q-input
+                    label="Email PEC"
+                    v-model="selectedCustomer.companypec"
+                    type="email"
+                  />
                   <span class="error">{{ errors[0] }}</span>
                 </ValidationProvider>
               </div>
@@ -109,9 +135,13 @@
           </div>
 
           <!--Step 2 - Intestatario contratto azienda/privato-->
-          <h6 v-if="(isCompany) && (step==2)">Dati amministratore azienda (obbligatori)</h6>
-          <h6 v-if="(!isCompany) && (step==2)">Dati intestatario contratto (obbligatori)</h6>
-          <div class="row" v-if="step==2">
+          <h6 v-if="isCompany && step == 2">
+            Dati amministratore azienda (obbligatori)
+          </h6>
+          <h6 v-if="!isCompany && step == 2">
+            Dati intestatario contratto (obbligatori)
+          </h6>
+          <div class="row" v-if="step == 2">
             <div class="col">
               <ValidationProvider
                 name="Nome"
@@ -139,14 +169,17 @@
                 rules="required|codfis"
                 v-slot="{ errors }"
               >
-                <q-input label="Codice Fiscale" v-model="selectedCustomer.codfis" />
+                <q-input
+                  label="Codice Fiscale"
+                  v-model="selectedCustomer.codfis"
+                />
                 <span class="error">{{ errors[0] }}</span>
               </ValidationProvider>
             </div>
           </div>
 
           <!--Step 3 - Indirizzo erogazione servizio -->
-          <div class="row" v-if="step==3">
+          <div class="row" v-if="step == 3">
             <div class="col">
               <ValidationProvider
                 name="Indirizzo"
@@ -168,12 +201,22 @@
                 <span class="error">{{ errors[0] }}</span>
               </ValidationProvider>
 
-              <ValidationProvider name="Città" immediate rules="required|alpha" v-slot="{ errors }">
+              <ValidationProvider
+                name="Città"
+                immediate
+                rules="required|alpha"
+                v-slot="{ errors }"
+              >
                 <q-input label="Città" v-model="selectedCustomer.city" />
                 <span class="error">{{ errors[0] }}</span>
               </ValidationProvider>
 
-              <ValidationProvider name="Stato" immediate rules="required|alpha" v-slot="{ errors }">
+              <ValidationProvider
+                name="Stato"
+                immediate
+                rules="required|alpha"
+                v-slot="{ errors }"
+              >
                 <q-input label="Stato" v-model="selectedCustomer.state" />
                 <span class="error">{{ errors[0] }}</span>
               </ValidationProvider>
@@ -181,10 +224,19 @@
           </div>
 
           <!--Step 4 - Contatti -->
-          <div class="row" v-if="step==4">
+          <div class="row" v-if="step == 4">
             <div class="col">
-              <ValidationProvider name="Email" immediate rules="required|email" v-slot="{ errors }">
-                <q-input label="Email" v-model="selectedCustomer.email" type="email" />
+              <ValidationProvider
+                name="Email"
+                immediate
+                rules="required|email"
+                v-slot="{ errors }"
+              >
+                <q-input
+                  label="Email"
+                  v-model="selectedCustomer.email"
+                  type="email"
+                />
                 <span class="error">{{ errors[0] }}</span>
               </ValidationProvider>
 
@@ -194,7 +246,11 @@
                 rules="required|phone"
                 v-slot="{ errors }"
               >
-                <q-input label="Tel. Mobile" v-model="selectedCustomer.mobilephone" type="tel" />
+                <q-input
+                  label="Tel. Mobile"
+                  v-model="selectedCustomer.mobilephone"
+                  type="tel"
+                />
                 <span class="error">{{ errors[0] }}</span>
               </ValidationProvider>
 
@@ -204,27 +260,42 @@
                 rules="required|phone"
                 v-slot="{ errors }"
               >
-                <q-input label="Tel. Fisso" v-model="selectedCustomer.phone" type="tel" />
+                <q-input
+                  label="Tel. Fisso"
+                  v-model="selectedCustomer.phone"
+                  type="tel"
+                />
                 <span class="error">{{ errors[0] }}</span>
               </ValidationProvider>
             </div>
           </div>
 
           <!--Step 5 - Configurazione contratto -->
-          <div class="row" v-if="step==5">
-            <q-table
-              style="width: 100%"
-              title="Servizi"
-              :data="serviceTemplates"
-              :columns="columnsTableServiceTemplates"
-              row-key="id"
-              :selected-rows-label="getSelectedServiceTemplate"
-              selection="multiple"
-              :selected.sync="selectedServicesTemplate"
-            />
+          <div class="row" v-if="step == 5">
+            <div class="row" v-if="step == 5" style="width: 100%">
+              <div class="col">
+                <q-select
+                  filled
+                  label="Categoria"
+                  @input="changeCategory"
+                  :options="serviceCategories"
+                  v-model="selectedCategory"
+                />
+                <q-table
+                  style="width: 100%"
+                  title="Servizi"
+                  :data="serviceTemplates"
+                  :columns="columnsTableServiceTemplates"
+                  row-key="id"
+                  :selected-rows-label="getSelectedServiceTemplate"
+                  selection="multiple"
+                  :selected.sync="selectedServicesTemplate"
+                />
+              </div>
+            </div>
 
             <!--Step 5 - Configurazione contratto -->
-            <div class="row" v-if="step==5" style="width: 100%">
+            <div class="row" v-if="step == 5" style="width: 100%">
               <div class="col">
                 <ValidationProvider
                   name="Indirizzo esecuzione contratto"
@@ -240,16 +311,20 @@
                 </ValidationProvider>
 
                 <div class="row" style="padding-top: 100px">
-                  <div class="col">Importo iva esclusa: {{valueContract.price}}</div>
-                  <div class="col">Importo iva: {{valueContract.vat}}</div>
-                  <div class="col">Importo totale: {{valueContract.total}}</div>
+                  <div class="col">
+                    Importo iva esclusa: {{ valueContract.price }}
+                  </div>
+                  <div class="col">Importo iva: {{ valueContract.vat }}</div>
+                  <div class="col">
+                    Importo totale: {{ valueContract.total }}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
           <!--Step 6 identity documents -->
-          <div class="row" v-if="step==6 || step==7">
+          <div class="row" v-if="step == 6 || step == 7">
             <div class="col">
               <q-btn-toggle
                 v-model="fromCamera"
@@ -257,13 +332,16 @@
                 no-caps
                 rounded
                 unelevated
-                :options="[{label: 'Camera', value: true},{label: 'File', value: false},]"
+                :options="[
+                  { label: 'Camera', value: true },
+                  { label: 'File', value: false }
+                ]"
               />
             </div>
           </div>
 
           <!--Step 6 identity card -->
-          <div class="row" v-if="step==6" stype="with: 100%">
+          <div class="row" v-if="step == 6" stype="with: 100%">
             <div class="col">
               <q-btn
                 v-if="fromCamera"
@@ -301,7 +379,7 @@
               />
             </div>
           </div>
-          <div class="row" v-if="step==6" stype="with: 100%">
+          <div class="row" v-if="step == 6" stype="with: 100%">
             <div class="col">
               <img :src="imageCiFront" style="width: 300px" />
               <img :src="imageCiBack" style="width: 300px" />
@@ -309,7 +387,7 @@
           </div>
 
           <!--Step 7 identity ficalcode/health card -->
-          <div class="row" v-if="step==7" stype="with: 100%">
+          <div class="row" v-if="step == 7" stype="with: 100%">
             <div class="col">
               <q-btn
                 v-if="fromCamera"
@@ -347,7 +425,7 @@
               />
             </div>
           </div>
-          <div class="row" v-if="step==7" stype="with: 100%">
+          <div class="row" v-if="step == 7" stype="with: 100%">
             <div class="col">
               <img :src="imageCfFront" style="width: 300px" />
               <img :src="imageCfBack" style="width: 300px" />
@@ -355,15 +433,25 @@
           </div>
 
           <!-- Step 8 final check -->
-          <div class="row" v-if="step==8">
+          <div class="row" v-if="step == 8">
             <div class="col">
               <pdf :src="fileFinalDocument"></pdf>
             </div>
           </div>
-          <div class="row" v-if="step==8">
+          <div class="row" v-if="step == 8">
             <div class="col">
-              <q-btn color="primary" icon="mail" label="Invia per email al cliente" @click="sendFinalDocumentByEmail"/>
-              <q-btn color="primary" icon="document" label="Visualizza" @click="openFinalDocument"/>
+              <q-btn
+                color="primary"
+                icon="mail"
+                label="Invia per email al cliente"
+                @click="sendFinalDocumentByEmail"
+              />
+              <q-btn
+                color="primary"
+                icon="document"
+                label="Visualizza"
+                @click="openFinalDocument"
+              />
             </div>
           </div>
         </q-form>
@@ -374,10 +462,17 @@
       <q-btn class="bottomRight" @click="nextStep">Avanti</q-btn>
     </div>
 
-    <q-dialog v-model="helpAddress" persistent transition-show="scale" transition-hide="scale">
+    <q-dialog
+      v-model="helpAddress"
+      persistent
+      transition-show="scale"
+      transition-hide="scale"
+    >
       <q-card class="bg-teal text-white" style="width: 300px">
         <q-card-section>
-          <div class="text-h6">Istruzioni sulla compilazione dell'indirizzo</div>
+          <div class="text-h6">
+            Istruzioni sulla compilazione dell'indirizzo
+          </div>
         </q-card-section>
 
         <q-card-section class="q-pt-none">
@@ -386,9 +481,16 @@
             <b>[Frazione] Via o Piazza, numero, CAP, Città, Provincia</b>
           </p>
           <ul>
-            <p>Dopo la virgola va un solo spazio. La virgola è attaccata alla parola precedente.</p>
-            <p>Il numero richiede solo cifre alfa-numeriche, NON scrivere n. o N.</p>
-            <p>La provincia richiede solo due caratteri maiuscoli senza parentesi</p>
+            <p>
+              Dopo la virgola va un solo spazio. La virgola è attaccata alla
+              parola precedente.
+            </p>
+            <p>
+              Il numero richiede solo cifre alfa-numeriche, NON scrivere n. o N.
+            </p>
+            <p>
+              La provincia richiede solo due caratteri maiuscoli senza parentesi
+            </p>
           </ul>
         </q-card-section>
 
@@ -418,10 +520,12 @@ export default {
         fromCamera: true,
         helpAddress: false,
         isCompany: false,
-        serviceTemplates: {},        
+        serviceCategories: [],
+        selectedCategory: {label: "Internet", value: "Internet", icon: ''},
+        serviceTemplates: {},
         selectedCustomer: {},
         selectedContract: {},
-        valueContract: {},     
+        valueContract: {},
         selectedServicesTemplate: [],
         columnsTableServiceTemplates: [
           { name: "actions", label: "Azioni" },
@@ -434,7 +538,7 @@ export default {
           {
             name: "code",
             label: "Codice",
-            field: "code",          
+            field: "code",
             sortable: true
           },
           {
@@ -469,8 +573,8 @@ export default {
         uuid: '' //Identifier of client data as images
     }
   },
-  methods: {      
-    nextStep() {    
+  methods: {
+    nextStep() {
       if(this.step<this.stepMax) this.step++;
       if(this.step==8) this.generateFinalDocument();
     },
@@ -483,14 +587,14 @@ export default {
           customer: this.selectedCustomer,
           contract: this.selectedContract
         })
-        .then(response => {                             
-              if (response.data.status === "OK") {  
+        .then(response => {
+              if (response.data.status === "OK") {
                 this.fileFinalDocument=response.data.results.urlFinalDocument;
-                console.log(this.fileFinalDocument);                                        
+                console.log(this.fileFinalDocument);
                 this.makeToast(response.data.msg);
-              }                                     
+              }
           })
-          .catch(error => {                              
+          .catch(error => {
               console.log(error);
               this.makeToast("Si è verificato un errore");
           });
@@ -504,30 +608,57 @@ export default {
           customer: this.selectedCustomer,
           contract: this.selectedContract
         })
-        .then(response => {                             
+        .then(response => {
               if (response.data.status === "OK") {
-                console.log(response.data.results.infoEmail);  
+                console.log(response.data.results.infoEmail);
                 this.makeToast(response.data.msg);
               }
               else{
                 this.makeToast("Si è verificato un errore.");
-              }                                  
+              }
           })
-          .catch(error => {                              
+          .catch(error => {
               console.log(error);
               this.makeToast("Si è verificato un errore");
           });
     },
+    changeCategory: function() {
+      const store=this.$store;
+      this.$axios.post('/adminarea/serviceTemplate/getByCategory', {category: this.selectedCategory})
+        .then(response => {
+              if (response.data.status === "OK") {
+                  this.serviceTemplates = response.data.serviceTemplates;
+                  this.makeToast(response.data.msg);
+              }
+          })
+          .catch(error => {
+              console.log(error);
+          });
+    },
+    getAllServiceCategories: function() {
+        this.$axios.post('/adminarea/serviceTemplate/getAllServiceCategories', {})
+            .then(response => {
+                  if (response.data.status === "OK") {
+                      response.data.serviceCategories.forEach(element => {
+                        this.serviceCategories.push({label: element.description, value: element.value, icon: ''})
+                      });
+                      this.makeToast(response.data.msg);
+                  }
+              })
+              .catch(error => {
+                  console.log(error);
+              });
+    },
     getAllServiceTemplates() {
       this.$axios.post('/adminarea/serviceTemplate/getall', {})
-          .then(response => {                             
-                if (response.data.status === "OK") {                  
-                    this.serviceTemplates = response.data.serviceTemplates; 
+          .then(response => {
+                if (response.data.status === "OK") {
+                    this.serviceTemplates = response.data.serviceTemplates;
                     console.log(this.serviceTemplates);
-                    this.makeToast(response.data.msg);                       
-                }                                     
+                    this.makeToast(response.data.msg);
+                }
             })
-            .catch(error => {                              
+            .catch(error => {
                 console.log(error);
             });
     },
@@ -539,33 +670,33 @@ export default {
           price+=element.price;
           vat+=(element.price*element.vat)/100;
           total=price+vat;
-          
+
           if(index===this.selectedServicesTemplate-1) {
             this.valueContract={"price": price, "vat": vat, "total": total};
           }
-        });      
+        });
       }
-      this.valueContract={price: 0, vat: 0, total: 0};           
+      this.valueContract={price: 0, vat: 0, total: 0};
     },
     async captureCiFront () {
       const image = await Camera.getPhoto({width: 600, height: 350, quality: 100, allowEditing: true, resultType: CameraResultType.base64});
-      this.imageCiFront = "data:image/png;base64, "+image.base64String;  
+      this.imageCiFront = "data:image/png;base64, "+image.base64String;
       this.uploadIdentityDocumentImage("CiFront-"+this.uuid, image.base64String);
     },
     async captureCiBack () {
       const image = await Camera.getPhoto({width: 600, height: 350, quality: 100, allowEditing: true, resultType: CameraResultType.base64});
-      this.imageCiBack = "data:image/png;base64, "+image.base64String; 
+      this.imageCiBack = "data:image/png;base64, "+image.base64String;
       this.uploadIdentityDocumentImage("CiBack-"+this.uuid, image.base64String);
     },
     async captureCfFront () {
       const image = await Camera.getPhoto({width: 600, height: 350, quality: 100, allowEditing: true, resultType: CameraResultType.base64});
-      this.imageCfFront = "data:image/png;base64, "+image.base64String    
+      this.imageCfFront = "data:image/png;base64, "+image.base64String
       this.uploadIdentityDocumentImage("CfFront-"+this.uuid, image.base64String);
     },
     async captureCfBack () {
       const image = await Camera.getPhoto({width: 600, height: 350, quality: 100, allowEditing: true, resultType: CameraResultType.base64});
       this.imageCfBack = "data:image/png;base64, "+image.base64String;
-      this.uploadIdentityDocumentImage("CfBack-"+this.uuid, image.base64String);    
+      this.uploadIdentityDocumentImage("CfBack-"+this.uuid, image.base64String);
     },
     uploadCiFront(file) {
       let fileName="CiFront-"+this.uuid+".jpg";
@@ -586,51 +717,52 @@ export default {
     uploadIdentityDocumentImage(imageName, imageData) {
       let data = new FormData();
       data.append('imageName', imageName);
-      data.append('file', imageData); 
+      data.append('file', imageData);
       this.$axios.post('/adminarea/upload/identity_document/image', data, {header : {'Content-Type' : 'image/png'}})
-        .then(response => {                             
-              if (response.data.status === "OK") {                                        
-                  this.makeToast(response.data.msg);                       
-              }                                     
+        .then(response => {
+              if (response.data.status === "OK") {
+                  this.makeToast(response.data.msg);
+              }
           })
-          .catch(error => {                              
+          .catch(error => {
               console.log(error);
               this.makeToast("Si è verificato un errore");
-          });  
+          });
     },
     uploadIdentityDocumentFile (fileName, file) {
       let data = new FormData();
       data.append('fileName', fileName);
-      data.append('file', file[0]);      
+      data.append('file', file[0]);
       this.$axios.post('/adminarea/upload/identity_document/file', data, {headers: {'Content-Type': 'multipart/form-data'}})
-      .then(response => {                             
-            if (response.data.status === "OK") {                                        
-                this.makeToast(response.data.msg);                       
-            }                                     
+      .then(response => {
+            if (response.data.status === "OK") {
+                this.makeToast(response.data.msg);
+            }
         })
-        .catch(error => {                              
+        .catch(error => {
             console.log(error);
             this.makeToast("Si è verificato un errore");
-        });   
+        });
     },
-    getUuid() {        
+    getUuid() {
       this.$axios.post('/adminarea/get_uuid', {})
-        .then(response => {                             
-              if (response.data.status === "OK") {                                        
+        .then(response => {
+              if (response.data.status === "OK") {
                   this.uuid=response.data.results.uuid;
-              }                                     
+              }
           })
-          .catch(error => {                              
+          .catch(error => {
               console.log(error);
-          });  
+          });
     },
-    makeToast(string) {        
+    makeToast(string) {
       this.$q.notify({color: 'green-4', textColor: 'white', icon: 'info', message: string});
-    } 
+    }
   },
   mounted() {
-    validator.setup(); 
-    this.getAllServiceTemplates();  
+    validator.setup();
+    this.getAllServiceTemplates();
+    this.getAllServiceCategories();
     this.getUuid();
     this.selectedCustomer.uuid=this.uuid;
   },
@@ -647,7 +779,7 @@ export default {
     beforeRouteEnter(to, from, next) {
     var currentUser = Store.state.user;
     console.log(currentUser);
-    if ((currentUser.role === "admin")      || 
+    if ((currentUser.role === "admin")      ||
         (currentUser.role === "manager")    ||
         (currentUser.role === "technician") ||
         (currentUser.role === "installer")  ||

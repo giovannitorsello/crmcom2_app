@@ -395,11 +395,10 @@
                   <div
                     id="oloMigrationModalitySections"
                     v-if="selectedOlo.objData"
-                  >                  
+                  >
                     <div
-                      v-for="(section,
-                      sectionName,
-                      indexSection) in selectedOlo.objData.migrationModalities"
+                      v-for="(section, sectionName, indexSection) in selectedOlo
+                        .objData.migrationModalities"
                       v-bind:key="indexSection"
                     >
                       <h6>
@@ -421,7 +420,11 @@
                             <input
                               class="form-control form-control-user"
                               v-bind:id="`${oloPropertyName}_${sectionName}`"
-                              v-model="selectedOlo.objData.migrationModalities[sectionName][oloPropertyName]"
+                              v-model="
+                                selectedOlo.objData.migrationModalities[
+                                  sectionName
+                                ][oloPropertyName]
+                              "
                             />
                           </div>
                         </div>
@@ -446,7 +449,7 @@
         :columns="columnsTableOlos"
         row-key="id"
         virtual-scroll
-        :pagination="initialPagination"        
+        :pagination="initialPagination"
         @row-click="openOlo"
         :filter="txtFilterOloTable"
       >
@@ -506,7 +509,7 @@ export default {
     return {
         tab: 'company',
         selectedOlo: {},
-        olos: [],          
+        olos: [],
         oloClassStyleRow: "",
         txtFilterOloTable: "",
         initialPagination: {
@@ -520,81 +523,81 @@ export default {
                   {name: "company",     label: "Company",                field: row => row.company, sortable: true},
                   {name: "cow",         label: "Cow",                    field: row => row.cow, sortable: true},
                   {name: "mailConsumer", label: "Mail consumer",         field: row => row.mailConsumer},
-                  {name: "mailCorporate",     label: "Mail corporate",   field: row => row.mailCorporate}, 
+                  {name: "mailCorporate",     label: "Mail corporate",   field: row => row.mailCorporate},
                   ]
     }
   },
-  methods: {      
+  methods: {
       openOlo: function (olo) {
-          this.$store.commit("changeOlo", olo);  
-          this.selectedOlo=olo;                  
-      }, 
+          this.$store.commit("changeOlo", olo);
+          this.selectedOlo=olo;
+      },
       getAllOlos: function() {
         this.$axios.post('/adminarea/olo/getall', {})
-            .then(response => {                             
-                  if (response.data.status === "OK") {                  
-                      this.olos = response.data.olos; 
-                      this.makeToast(response.data.msg);                       
-                  }                                     
+            .then(response => {
+                  if (response.data.status === "OK") {
+                      this.olos = response.data.olos;
+                      this.makeToast(response.data.msg);
+                  }
               })
-              .catch(error => {                              
+              .catch(error => {
                   console.log(error);
               });
-      },    
+      },
       getOloData: function () {
         if(this.$store.state.olo) {
-          this.selectedOlo=Object.assign({}, this.$store.state.olo);                               
+          this.selectedOlo=Object.assign({}, this.$store.state.olo);
         }
       },
       newOlo: function() {
         this.selectedOlo={};
-        this.$store.commit("changeOlo",this.selectedOlo);   
+        this.$store.commit("changeOlo",this.selectedOlo);
       },
-      async saveOlo() {   
+      async saveOlo() {
         const valid = true;
-        if(valid) {   
+        if(valid) {
         this.$axios.post('/adminarea/olo/update', {olo: this.selectedOlo})
-          .then(response => {                
-                if (response.data.status === "OK") {                  
-                    this.selectedOlo = response.data.olo;  
-                    this.$store.commit("changeOlo", this.selectedOlo);      
-                    this.makeToast(response.data.msg); 
-                    this.getOloData();             
+          .then(response => {
+                if (response.data.status === "OK") {
+                    this.selectedOlo = response.data.olo;
+                    this.$store.commit("changeOlo", this.selectedOlo);
+                    this.makeToast(response.data.msg);
+                    this.getOloData();
                     alert("Olo company inserita");
-                }                                     
+                }
             })
-            .catch(error => {                              
+            .catch(error => {
                 console.log(error);
             });
         }
         else {
-          alert("Dati errati controlla i campi inseriti");                    
+          alert("Dati errati controlla i campi inseriti");
         }
       },
       deleteOlo: function() {
         const isConfirmed = confirm("Confermi la cancellazione?");
         if(isConfirmed) {
         this.$axios.post('/adminarea/olo/delete', {olo: this.selectedOlo})
-          .then(response => {                
-                if (response.data.status === "OK") {                  
-                    this.selectedOlo = response.data.olo;  
-                    this.$store.commit("changeOlo", this.selectedOlo);      
-                    this.makeToast(response.data.msg); 
-                    this.getOloData();             
-                }                                     
+          .then(response => {
+                if (response.data.status === "OK") {
+                    this.selectedOlo = response.data.olo;
+                    this.$store.commit("changeOlo", this.selectedOlo);
+                    this.makeToast(response.data.msg);
+                    this.getOloData();
+                }
             })
-            .catch(error => {                              
+            .catch(error => {
                 console.log(error);
             });
         }
       },
-      makeToast(string) {        
+      makeToast(string) {
         this.$q.notify({color: 'green-4', textColor: 'white', icon: 'info', message: string});
-      }   
+      }
   },
   mounted() {
     validator.setup();
-    this.getAllOlos();      
+    this.getAllOlos();
   },
   computed: mapState({
     user: 'user',
@@ -606,8 +609,7 @@ export default {
     },
     beforeRouteEnter(to, from, next) {
     var currentUser = Store.state.user;
-    console.log(currentUser);
-    if ((currentUser.role === "admin") || 
+    if ((currentUser.role === "admin") ||
         (currentUser.role === "manager"))  next();
     else next("/Login");
   }

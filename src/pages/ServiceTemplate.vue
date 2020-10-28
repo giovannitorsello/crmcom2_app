@@ -83,7 +83,7 @@
             <ValidationProvider
               name="Prezzo"
               immediate
-              rules="required|integer"
+              rules="required|decimal"
               v-slot="{ errors }"
             >
               <q-input label="Prezzo" v-model="selectedServiceTemplate.price" />
@@ -94,7 +94,7 @@
             <ValidationProvider
               name="IVA"
               immediate
-              rules="required|integer"
+              rules="required|decimal"
               v-slot="{ errors }"
             >
               <q-input label="IVA" v-model="selectedServiceTemplate.vat" />
@@ -175,17 +175,17 @@
         </q-input>
       </template>
 
-      <!--template v-slot:header="props">
+      <template v-slot:header="props">
         <q-tr :props="props">
           <q-th auto-width />
-          <q-th v-for="col in props.cols" :key="col.name" :props="props">{{
-            col.label
-          }}</q-th>
+          <q-th v-for="col in props.cols" :key="col.name" :props="props">
+            {{ col.label }}
+          </q-th>
         </q-tr>
-      </template-->
+      </template>
 
       <template v-slot:body="props">
-        <q-tr :props="props" v-bind:class="props.row.state">
+        <q-tr :props="props">
           <q-td auto-width>
             <img
               src="/img/actions/open.png"
@@ -208,7 +208,9 @@
               v-on:click="deleteServiceTemplate(props.row)"
             />
           </q-td>
-          <q-td v-for="col in props.cols" :key="col.name" :props="props">{{ col.value }}</q-td>
+          <q-td v-for="col in props.cols" :key="col.name" :props="props">
+            {{ col.value }}
+          </q-td>
         </q-tr>
       </template>
     </q-table>
@@ -221,7 +223,7 @@ import {Store} from '../store'
 import { ValidationProvider, ValidationObserver, extend, localize } from 'vee-validate';
 import validator from "./validator"
 
-export default {  
+export default {
   data() {
       return {
         selectedServiceTemplate: {},
@@ -230,9 +232,9 @@ export default {
         selectedCategory: {label: "Internet", value: "Internet", icon: ''},
         txtFilter: "",
         initialPagination: {
-          sortBy: "desc",
-          descending: true,
-          page: 2,
+          sortBy: "category",
+          descending: false,
+          page: 1,
           rowsPerPage: 5
         },
         columnsTableServiceTemplates: [
@@ -246,7 +248,7 @@ export default {
           {
             name: "code",
             label: "Codice",
-            field: "code",          
+            field: "code",
             sortable: true
           },
           {
@@ -294,27 +296,27 @@ export default {
     getAllServiceTemplates: function() {
       this.serviceTemplates=[];
         this.$axios.post('/adminarea/serviceTemplate/getall', {})
-            .then(response => {                             
-                  if (response.data.status === "OK") {            
-                    this.serviceTemplates = response.data.serviceTemplates;  
-                    this.makeToast(response.data.msg);                       
-                  }                                     
+            .then(response => {
+                  if (response.data.status === "OK") {
+                    this.serviceTemplates = response.data.serviceTemplates;
+                    this.makeToast(response.data.msg);
+                  }
               })
-              .catch(error => {                              
+              .catch(error => {
                   console.log(error);
               });
     },
     getAllServiceCategories: function() {
         this.$axios.post('/adminarea/serviceTemplate/getAllServiceCategories', {})
-            .then(response => {                             
-                  if (response.data.status === "OK") {                                         
+            .then(response => {
+                  if (response.data.status === "OK") {
                       response.data.serviceCategories.forEach(element => {
-                        this.serviceCategories.push({label: element.description, value: element.value, icon: ''})                        
+                        this.serviceCategories.push({label: element.description, value: element.value, icon: ''})
                       });
-                      this.makeToast(response.data.msg);                       
-                  }                                     
+                      this.makeToast(response.data.msg);
+                  }
               })
-              .catch(error => {                              
+              .catch(error => {
                   console.log(error);
               });
     },
@@ -322,52 +324,52 @@ export default {
 
     },
     newServiceTemplate: function (){
-      this.selectedServiceTemplate.id=null;
+      this.selectedServiceTemplate.id="";
       this.saveServiceTemplate();
     },
     saveServiceTemplate: function (){
         let relUrl="";
         if((!this.selectedServiceTemplate.id) || (this.selectedServiceTemplate.id==="")) {
-          relUrl='/adminarea/serviceTemplate/insert'; 
-          this.selectedServiceTemplate.state="active"; //New services start active          
+          relUrl='/adminarea/serviceTemplate/insert';
+          this.selectedServiceTemplate.state="active"; //New services start active
         }
         else relUrl='/adminarea/serviceTemplate/update'
 
         //Set or update category
         this.selectedServiceTemplate.category=this.selectedCategory.label;
-        
+
         this.$axios.post(relUrl, {serviceTemplate: this.selectedServiceTemplate})
-            .then(response => {                
-                  if (response.data.status === "OK") {                  
-                      this.selectedServiceTemplate = response.data.serviceTemplate; 
+            .then(response => {
+                  if (response.data.status === "OK") {
+                      this.selectedServiceTemplate = response.data.serviceTemplate;
                       this.$store.commit("changeServiceTemplate",Object.assign({}, this.selectedServiceTemplate));
                       if(relUrl==='/adminarea/serviceTemplate/insert') this.serviceTemplates.push(this.selectedServiceTemplate);
-                  }                                     
+                  }
                   this.makeToast(response.data.msg);
               })
-              .catch(error => {                              
+              .catch(error => {
                   console.log(error);
               });
     },
-    selectServiceTemplate: function (srv) {      
+    selectServiceTemplate: function (srv) {
       this.selectedServiceTemplate=srv;
-      this.$store.commit("changeServiceTemplate",Object.assign({}, this.selectedServiceTemplate));       
+      this.$store.commit("changeServiceTemplate",Object.assign({}, this.selectedServiceTemplate));
     },
     deleteServiceTemplate: function (srv) {
       const isConfirmed = confirm("Confermi la cancellazione?");
       if(isConfirmed) {
       const parent=this.$parent;
       this.$axios.post('/adminarea/serviceTemplate/delete', {serviceTemplate: srv})
-          .then(response => {                
+          .then(response => {
                 if (response.data.status === "OK") {
                     this.serviceTemplates.forEach((element, index, array) => {
-                      if(element.id===srv.id)  this.serviceTemplates.splice(index,1); 
-                    });              
-                    this.selectedServiceTemplate = {};                        
-                    this.makeToast(response.data.msg);                              
-                }                                     
+                      if(element.id===srv.id)  this.serviceTemplates.splice(index,1);
+                    });
+                    this.selectedServiceTemplate = {};
+                    this.makeToast(response.data.msg);
+                }
             })
-            .catch(error => {                              
+            .catch(error => {
                 console.log(error);
             });
         }
@@ -375,38 +377,38 @@ export default {
     activateServiceTemplate: function(srv) {
       srv.state="active";
       this.$axios.post('/adminarea/serviceTemplate/update', {serviceTemplate: srv})
-        .then(response => {                
-              if (response.data.status === "OK") {                  
-                  this.selectedServiceTemplate = response.data.serviceTemplate;                      
-                  this.makeToast(response.data.msg);                   
-              }                                     
+        .then(response => {
+              if (response.data.status === "OK") {
+                  this.selectedServiceTemplate = response.data.serviceTemplate;
+                  this.makeToast(response.data.msg);
+              }
           })
-          .catch(error => {                              
+          .catch(error => {
               console.log(error);
           });
     },
     suspendServiceTemplate: function(srv) {
       srv.state="suspended";
       this.$axios.post('/adminarea/serviceTemplate/update', {serviceTemplate: srv})
-        .then(response => {                
-              if (response.data.status === "OK") {                  
-                  this.selectedServiceTemplate = response.data.serviceTemplate;                      
-                  this.makeToast(response.data.msg);                  
-              }                                     
+        .then(response => {
+              if (response.data.status === "OK") {
+                  this.selectedServiceTemplate = response.data.serviceTemplate;
+                  this.makeToast(response.data.msg);
+              }
           })
-          .catch(error => {                              
+          .catch(error => {
               console.log(error);
           });
     },
     exit: function() {
       this.$parent.$emit("selectedCustomer");
     },
-    makeToast(string) {        
+    makeToast(string) {
       this.$q.notify({color: 'green-4', textColor: 'white', icon: 'info', message: string});
-    }  
+    }
   },
   computed: mapState({
-    serviceTemplate: 'serviceTemplate',      
+    serviceTemplate: 'serviceTemplate',
     }),
     created() {
       this.getServiceTemplateData();

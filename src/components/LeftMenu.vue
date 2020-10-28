@@ -8,7 +8,7 @@
         v-for="menuItem in pagesAllowed"
         :key="menuItem.id"
       >
-        <q-item-section>{{menuItem.name}}</q-item-section>
+        <q-item-section>{{ menuItem.name }}</q-item-section>
       </q-item>
     </q-list>
 
@@ -28,7 +28,6 @@ export default {
     };
   },
   created() {
-    console.log(this.user.role);
     if (this.user.role === "admin") {
       this.pagesAllowed = [
         { id: 1, name: "Ricerche", route: "/ViewData", type: "general" },
@@ -55,7 +54,7 @@ export default {
           name: "Monitor Dispositivi Backbone",
           route: "/MonitorDevicesBackbone",
           type: "monitor"
-        },        
+        },
         {
           id: 6,
           name: "Modelli di servizio",
@@ -79,6 +78,12 @@ export default {
           name: "Olo companies",
           route: "/Olo",
           type: "settings"
+        },
+        {
+          id: 10,
+          name: "Registrazione cliente",
+          route: "/WizardCustomerRegistration",
+          type: "generic"
         }
       ];
     }
@@ -215,5 +220,4 @@ export default {
 };
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

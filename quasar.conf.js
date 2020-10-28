@@ -77,7 +77,7 @@ module.exports = function(/* ctx */) {
       host: "127.0.0.1",
       https: false,
       port: 8080,
-      vueDevtools: true,
+      vueDevtools: false,
       open: false
     },
 

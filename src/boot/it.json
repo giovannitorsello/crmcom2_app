@@ -36,6 +36,7 @@
     "ipv6": "Inserisci un ip versione 6 valido (es. 2001:0db8:85a3:0000:1319:8a2e:0370:7344)",
     "address": "Inserisci un indirizzo valido (es. Via Agnesi, 16, 73040, Casarano, LE)",
     "longitude": "Inserisci una coordinata valida (es. 18.123456)",
-    "latitude": "Inserisci una coordinata valida (es. 39.123456)"
+    "latitude": "Inserisci una coordinata valida (es. 39.123456)",
+    "decimal": "Inserisci un numero usando il . come separatore decimale."
   }
 }

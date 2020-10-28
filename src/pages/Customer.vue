@@ -2,12 +2,28 @@
   <div id="customers">
     <h6>
       Gestione del cliente
-      <strong>{{customerDescription}}</strong>
+      <strong>{{ customerDescription }}</strong>
     </h6>
-    <img src="/img/actions/new.png" @click="newCustomer" style="width: 48px; height: 48px;" />
-    <img src="/img/actions/save.png" @click="saveCustomer" style="width: 48px; height: 48px;" />
-    <img src="/img/actions/delete.png" @click="deleteCustomer" style="width: 48px; height: 48px;" />
-    <img src="/img/actions/exit.png" @click="exit" style="width: 48px; height: 48px;" />
+    <img
+      src="/img/actions/new.png"
+      @click="newCustomer"
+      style="width: 48px; height: 48px;"
+    />
+    <img
+      src="/img/actions/save.png"
+      @click="saveCustomer"
+      style="width: 48px; height: 48px;"
+    />
+    <img
+      src="/img/actions/delete.png"
+      @click="deleteCustomer"
+      style="width: 48px; height: 48px;"
+    />
+    <img
+      src="/img/actions/exit.png"
+      @click="exit"
+      style="width: 48px; height: 48px;"
+    />
 
     <ValidationObserver ref="formCustomer">
       <q-form ref="customerForm" class="q-gutter-md">
@@ -16,7 +32,10 @@
             <q-toggle label="Azienda" v-model="isCompany" />
           </div>
           <div class="col">
-            <q-checkbox label="Da fatturare" v-model="selectedCustomer.businnessflag" />
+            <q-checkbox
+              label="Da fatturare"
+              v-model="selectedCustomer.businnessflag"
+            />
           </div>
         </div>
 
@@ -28,7 +47,12 @@
             </p>
           </q-tab>
           <q-tab name="address" icon="contacts" label="Indirizzo" />
-          <q-tab name="company" icon="building" label="Azienda" v-if="isCompany" />
+          <q-tab
+            name="company"
+            icon="building"
+            label="Azienda"
+            v-if="isCompany"
+          />
           <q-tab name="contacts" icon="phone" label="Contatti" />
           <q-tab name="security" icon="security" label="Credenziali" />
         </q-tabs>
@@ -53,7 +77,10 @@
                   rules="required|alpha_spaces"
                   v-slot="{ errors }"
                 >
-                  <q-input label="Cognome" v-model="selectedCustomer.lastname" />
+                  <q-input
+                    label="Cognome"
+                    v-model="selectedCustomer.lastname"
+                  />
                   <span class="error">{{ errors[0] }}</span>
                 </ValidationProvider>
 
@@ -63,7 +90,10 @@
                   rules="required|codfis"
                   v-slot="{ errors }"
                 >
-                  <q-input label="Codice Fiscale" v-model="selectedCustomer.codfis" />
+                  <q-input
+                    label="Codice Fiscale"
+                    v-model="selectedCustomer.codfis"
+                  />
                   <span class="error">{{ errors[0] }}</span>
                 </ValidationProvider>
               </div>
@@ -79,7 +109,10 @@
                   rules="required|address"
                   v-slot="{ errors }"
                 >
-                  <q-input label="Indirizzo" v-model="selectedCustomer.address" />
+                  <q-input
+                    label="Indirizzo"
+                    v-model="selectedCustomer.address"
+                  />
                   <span class="error">{{ errors[0] }}</span>
                 </ValidationProvider>
 
@@ -126,7 +159,10 @@
                     rules="required"
                     v-slot="{ errors }"
                   >
-                    <q-input label="Denominazione Azienda" v-model="selectedCustomer.company" />
+                    <q-input
+                      label="Denominazione Azienda"
+                      v-model="selectedCustomer.company"
+                    />
                     <span class="error">{{ errors[0] }}</span>
                   </ValidationProvider>
 
@@ -165,7 +201,10 @@
                     rules="required|vatcode"
                     v-slot="{ errors }"
                   >
-                    <q-input label="Partita IVA" v-model="selectedCustomer.vatcode" />
+                    <q-input
+                      label="Partita IVA"
+                      v-model="selectedCustomer.vatcode"
+                    />
                     <span class="error">{{ errors[0] }}</span>
                   </ValidationProvider>
 
@@ -174,12 +213,23 @@
                     rules="required|alpha_num"
                     v-slot="{ errors }"
                   >
-                    <q-input label="Codice Univoco SDI" v-model="selectedCustomer.sdicode" />
+                    <q-input
+                      label="Codice Univoco SDI"
+                      v-model="selectedCustomer.sdicode"
+                    />
                     <span class="error">{{ errors[0] }}</span>
                   </ValidationProvider>
 
-                  <ValidationProvider name="Email PEC" rules="required|email" v-slot="{ errors }">
-                    <q-input label="Email PEC" v-model="selectedCustomer.companypec" type="email" />
+                  <ValidationProvider
+                    name="Email PEC"
+                    rules="required|email"
+                    v-slot="{ errors }"
+                  >
+                    <q-input
+                      label="Email PEC"
+                      v-model="selectedCustomer.companypec"
+                      type="email"
+                    />
                     <span class="error">{{ errors[0] }}</span>
                   </ValidationProvider>
                 </div>
@@ -196,7 +246,11 @@
                   rules="required|email"
                   v-slot="{ errors }"
                 >
-                  <q-input label="Email" v-model="selectedCustomer.email" type="email" />
+                  <q-input
+                    label="Email"
+                    v-model="selectedCustomer.email"
+                    type="email"
+                  />
                   <span class="error">{{ errors[0] }}</span>
                 </ValidationProvider>
 
@@ -206,7 +260,11 @@
                   rules="required|phone"
                   v-slot="{ errors }"
                 >
-                  <q-input label="Tel. Mobile" v-model="selectedCustomer.mobilephone" type="tel" />
+                  <q-input
+                    label="Tel. Mobile"
+                    v-model="selectedCustomer.mobilephone"
+                    type="tel"
+                  />
                   <span class="error">{{ errors[0] }}</span>
                 </ValidationProvider>
 
@@ -216,7 +274,11 @@
                   rules="required|phone"
                   v-slot="{ errors }"
                 >
-                  <q-input label="Tel. Fisso" v-model="selectedCustomer.phone" type="tel" />
+                  <q-input
+                    label="Tel. Fisso"
+                    v-model="selectedCustomer.phone"
+                    type="tel"
+                  />
                   <span class="error">{{ errors[0] }}</span>
                 </ValidationProvider>
               </div>
@@ -232,11 +294,19 @@
                   rules="required|email"
                   v-slot="{ errors }"
                 >
-                  <q-input label="Nome utente" v-model="selectedCustomer.username" />
+                  <q-input
+                    label="Nome utente"
+                    v-model="selectedCustomer.username"
+                  />
                   <span class="error">{{ errors[0] }}</span>
                 </ValidationProvider>
 
-                <ValidationProvider name="Password" immediate rules="required" v-slot="{ errors }">
+                <ValidationProvider
+                  name="Password"
+                  immediate
+                  rules="required"
+                  v-slot="{ errors }"
+                >
                   <q-input
                     label="Password"
                     v-model="selectedCustomer.password"
@@ -276,7 +346,9 @@
         <template v-slot:header="props">
           <q-tr :props="props">
             <q-th auto-width />
-            <q-th v-for="col in props.cols" :key="col.name" :props="props">{{ col.label }}</q-th>
+            <q-th v-for="col in props.cols" :key="col.name" :props="props">{{
+              col.label
+            }}</q-th>
           </q-tr>
         </template>
         <template v-slot:body="props">
@@ -303,7 +375,9 @@
                 v-on:click="deleteContract(props.row)"
               />
             </q-td>
-            <q-td v-for="col in props.cols" :key="col.name" :props="props">{{ col.value }}</q-td>
+            <q-td v-for="col in props.cols" :key="col.name" :props="props">{{
+              col.value
+            }}</q-td>
           </q-tr>
         </template>
       </q-table>
@@ -322,56 +396,56 @@ export default {
     return {
         tab: 'person',
         isPwd: true,
-        isCompany: false,        
+        isCompany: false,
         selectedCustomer: {},
         selectedContract: {},
-        contracts: [],          
+        contracts: [],
         contractClassStyleRow: "",
         pagination: {rowsPerPage: 0},
         columnsTableContracts: [
                   {name: "actions",     label: "Azioni"},
-                  {name: "Stato",       label: "state",               field: row => row.state},                  
+                  {name: "Stato",       label: "state",               field: row => row.state},
                   {name: "description", label: "Descrizione",         field: row => row.description,sortable: true},
-                  {name: "address",     label: "Indirizzo",           field: row => row.address, sortable: true}, 
-                  {name: "duration",    label: "Durata",              field: row => row.duration}, 
+                  {name: "address",     label: "Indirizzo",           field: row => row.address, sortable: true},
+                  {name: "duration",    label: "Durata",              field: row => row.duration},
                   {name: "createdAt",   label: "Data inserimento",    field: row => row.createdAt}
                   ],
         columnsTableDevices: [
                   {name: "description", label: "Descrizione",    field: row => row.description,sortable: true},
-                  {name: "ipv4",        label: "Ip",             field: row => row.address, sortable: true}, 
-                  {name: "mac",         label: "Mac",            field: row => row.duration}, 
-                  {name: "Stato",       label: "state",          field: row => row.state},                  
-                  ],        
+                  {name: "ipv4",        label: "Ip",             field: row => row.address, sortable: true},
+                  {name: "mac",         label: "Mac",            field: row => row.duration},
+                  {name: "Stato",       label: "state",          field: row => row.state},
+                  ],
     }
   },
-  methods: {      
+  methods: {
       openContract: function (ctr) {
-          this.$store.commit("changeContract", ctr);           
+          this.$store.commit("changeContract", ctr);
           this.$router.push("/Contract")
       },
       activateContract: function(ctr) {
         ctr.state="active";
         this.$axios.post('/adminarea/contract/update', {contract: ctr})
-          .then(response => {                
-                if (response.data.status === "OK") {                  
-                    this.selectedContract = response.data.contract;  
-                    this.$store.commit("changeContract", this.selectedContract);                                                       
-                }                                     
+          .then(response => {
+                if (response.data.status === "OK") {
+                    this.selectedContract = response.data.contract;
+                    this.$store.commit("changeContract", this.selectedContract);
+                }
             })
-            .catch(error => {                              
+            .catch(error => {
                 console.log(error);
             });
       },
       suspendContract: function(ctr) {
         ctr.state="suspended";
         this.$axios.post('/adminarea/contract/update', {contract: ctr})
-          .then(response => {                
-                if (response.data.status === "OK") {                  
+          .then(response => {
+                if (response.data.status === "OK") {
                     this.selectedContract = response.data.contract;
-                    this.$store.commit("changeContract", this.selectedContract);                                                       
-                }                                     
+                    this.$store.commit("changeContract", this.selectedContract);
+                }
             })
-            .catch(error => {                              
+            .catch(error => {
                 console.log(error);
             });
       },
@@ -379,36 +453,34 @@ export default {
         const isConfirmed = confirm("Confermi la cancellazione?");
         if(isConfirmed) {console.log("Delete confirmed"); return "cancellato";}
         return "";
-      },      
+      },
       getCustomerData: function () {
         if(this.$store.state.customer) {
-          this.selectedCustomer=Object.assign({}, this.$store.state.customer);                     
-          if(this.selectedCustomer.vatcode==="") this.isCompany = false; 
+          this.selectedCustomer=Object.assign({}, this.$store.state.customer);
+          if(this.selectedCustomer.vatcode==="") this.isCompany = false;
           else {this.isCompany = true; this.tab="company";}
-          console.log("Customer");
-          console.log(this.selectedCustomer);            
-          this.getCustomerContracts();          
+          this.getCustomerContracts();
         }
       },
-      getCustomerContracts: function () {          
+      getCustomerContracts: function () {
           const store=this.$store;
-          this.showCustomerSearch=true;     
+          this.showCustomerSearch=true;
           this.$axios.post('/adminarea/contract/get_all_by_customer', {idCustomer: this.selectedCustomer.id})
-          .then(response => {                
-                if (response.data.status === "OK") {                  
-                    this.contracts = response.data.contracts;                                       
-                }                                     
+          .then(response => {
+                if (response.data.status === "OK") {
+                    this.contracts = response.data.contracts;
+                }
             })
-            .catch(error => {                              
+            .catch(error => {
                 console.log(error);
             });
       },
-      changeCustomerType: function () {                  
+      changeCustomerType: function () {
           if (this.isCompanyBtn.value === false) {
               this.selectedCustomer.vatcode = "";
-              this.isCompanyBtn.value = true;              
-              this.isCompanyBtn.caption = "<span><i class='fa fa-industry'></i> Azienda</span>";              
-          }          
+              this.isCompanyBtn.value = true;
+              this.isCompanyBtn.caption = "<span><i class='fa fa-industry'></i> Azienda</span>";
+          }
           else if (this.isCompanyBtn.value === true) {
               this.selectedCustomer.vatcode = "";
               this.isCompanyBtn.value = false;
@@ -419,42 +491,42 @@ export default {
         this.selectedCustomer={};
         this.contracts = [];
         this.selectedContract={}
-        this.$store.commit("changeCustomer",this.selectedCustomer);   
+        this.$store.commit("changeCustomer",this.selectedCustomer);
       },
-      async saveCustomer() {   
+      async saveCustomer() {
         const valid = true;
-        if(valid) {   
+        if(valid) {
         this.$axios.post('/adminarea/customer/update', {customer: this.selectedCustomer})
-          .then(response => {                
-                if (response.data.status === "OK") {                  
-                    this.selectedCustomer = response.data.customer;  
-                    this.$store.commit("changeCustomer", this.selectedCustomer);      
-                    this.makeToast(response.data.msg); 
-                    this.getCustomerData();             
+          .then(response => {
+                if (response.data.status === "OK") {
+                    this.selectedCustomer = response.data.customer;
+                    this.$store.commit("changeCustomer", this.selectedCustomer);
+                    this.makeToast(response.data.msg);
+                    this.getCustomerData();
                     alert("Cliente inserito");
-                }                                     
+                }
             })
-            .catch(error => {                              
+            .catch(error => {
                 console.log(error);
             });
         }
         else {
-          alert("Dati errati controlla i campi inseriti");                    
+          alert("Dati errati controlla i campi inseriti");
         }
       },
       deleteCustomer: function() {
         const isConfirmed = confirm("Confermi la cancellazione?");
         if(isConfirmed) {
         this.$axios.post('/adminarea/customer/delete', {customer: this.selectedCustomer})
-          .then(response => {                
-                if (response.data.status === "OK") {                  
-                    this.selectedCustomer = response.data.customer;  
-                    this.$store.commit("changeCustomer", this.selectedCustomer);      
-                    this.makeToast(response.data.msg); 
-                    this.getCustomerData();             
-                }                                     
+          .then(response => {
+                if (response.data.status === "OK") {
+                    this.selectedCustomer = response.data.customer;
+                    this.$store.commit("changeCustomer", this.selectedCustomer);
+                    this.makeToast(response.data.msg);
+                    this.getCustomerData();
+                }
             })
-            .catch(error => {                              
+            .catch(error => {
                 console.log(error);
             });
         }
@@ -462,20 +534,20 @@ export default {
       exit: function() {
         this.$router.push("/AdminHome");
       },
-      makeToast(string) {        
+      makeToast(string) {
         this.$q.notify({color: 'green-4', textColor: 'white', icon: 'info', message: string});
-      }   
+      }
   },
   mounted() {
     validator.setup();
-    this.getCustomerData();      
+    this.getCustomerData();
   },
   computed: mapState({
     user: 'user',
-    customer: 'customer',  
+    customer: 'customer',
     customerDescription() {
       const customer=this.customer;
-      
+
       if(customer.vatcode && customer.vatcode!=="")
         return customer.company;
       else if(customer.lastname && customer.firstname)
@@ -490,8 +562,7 @@ export default {
     },
     beforeRouteEnter(to, from, next) {
     var currentUser = Store.state.user;
-    console.log(currentUser);
-    if ((currentUser.role === "admin") || 
+    if ((currentUser.role === "admin") ||
         (currentUser.role === "manager") ||
         (currentUser.role === "technician"))  next();
     else next("/Login");

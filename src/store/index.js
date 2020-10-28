@@ -1,9 +1,9 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+import Vue from "vue";
+import Vuex from "vuex";
 
 // import example from './module-example'
 
-Vue.use(Vuex)
+Vue.use(Vuex);
 
 /*
  * If not building with SSR mode, you can
@@ -71,11 +71,11 @@ const Store = new Vuex.Store({
 
   // enable strict mode (adds overhead!)
   // for dev mode only
-  strict: process.env.DEV
-})
+  strict: false //process.env.DEV
+});
 
-export default function (/* { ssrContext } */) {
-  return Store
+export default function(/* { ssrContext } */) {
+  return Store;
 }
 
-export { Store }
+export { Store };
