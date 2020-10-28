@@ -48,7 +48,7 @@ export default {
       this.$refs.loginForm.resetValidation();
     },
     
-    login() { 
+    login() {
       const store=this.$store;
       this.$axios.post('/adminarea/login', {username: this.username, password: this.password})
       .then((response) => {                     
