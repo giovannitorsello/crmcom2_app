@@ -26,440 +26,505 @@
     <h6 v-if="step == 8"><b>Configurazione contratto:</b>Controlli finali</h6>
 
     <div id="dataFormDiv" style="padding-bottom: 100px;">
-      <ValidationObserver ref="formCustomer">
-        <q-form ref="customerFrom" class="q-gutter-md">
-          <!--Step 1 - scelta tipo cliente -->
-          <div class="row" v-if="step == 1">
-            <div class="col-auto">
-              <q-btn-toggle
-                v-model="isCompany"
-                toggle-color="primary"
-                no-caps
-                rounded
-                unelevated
-                :options="[
-                  { label: 'Privato', value: false },
-                  { label: 'Azienda', value: true }
-                ]"
-              />
-            </div>
+      <!--q-form ref="customerFrom" class="q-gutter-md"-->
+      <!--Step 1 - scelta tipo cliente -->
+      <ValidationObserver>
+        <div class="row" v-if="step == 1">
+          <div class="col-auto">
+            <q-btn-toggle
+              v-model="isCompany"
+              toggle-color="primary"
+              no-caps
+              rounded
+              unelevated
+              :options="[
+                { label: 'Privato', value: false },
+                { label: 'Azienda', value: true }
+              ]"
+            />
           </div>
+        </div>
+        <div id="buttons" class="barButtons" v-if="step == 1">
+          <q-btn class="bottomLeft" @click="prevStep">Indietro</q-btn>
+          <q-btn class="bottomRight" @click="nextStep">Avanti</q-btn>
+        </div>
+      </ValidationObserver>
 
-          <!--Step 2 - Intestatario contratto azienda/privato -->
-          <div id="companyFields" v-if="isCompany && step == 2">
-            <div class="row">
-              <div class="col">
-                <ValidationProvider
-                  name="Denominazone Azienda"
-                  immediate
-                  rules="required"
-                  v-slot="{ errors }"
-                >
-                  <q-input
-                    label="Denominazione Azienda"
-                    v-model="selectedCustomer.company"
-                  />
-                  <span class="error">{{ errors[0] }}</span>
-                </ValidationProvider>
-
-                <ValidationProvider
-                  name="Indirizzo Sede Azienda"
-                  immediate
-                  rules="required|address"
-                  v-slot="{ errors }"
-                >
-                  <q-input
-                    label="Indirizzo Sede Azienda"
-                    v-model="selectedCustomer.companyaddress"
-                  >
-                    <a>Aiuto sulla compilazione</a>
-                  </q-input>
-                  <span class="error">{{ errors[0] }}</span>
-                </ValidationProvider>
-
-                <ValidationProvider
-                  name="Telefono principale aziendale"
-                  immediate
-                  rules="required|phone"
-                  v-slot="{ errors }"
-                >
-                  <q-input
-                    label="Telefono principale aziendale"
-                    v-model="selectedCustomer.companyphone"
-                    type="tel"
-                  />
-                  <span class="error">{{ errors[0] }}</span>
-                </ValidationProvider>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col">
-                <ValidationProvider
-                  name="Partita IVA"
-                  rules="required|vatcode"
-                  v-slot="{ errors }"
-                >
-                  <q-input
-                    label="Partita IVA"
-                    v-model="selectedCustomer.vatcode"
-                  />
-                  <span class="error">{{ errors[0] }}</span>
-                </ValidationProvider>
-
-                <ValidationProvider
-                  name="Codice univoco SDI"
-                  rules="required|alpha_num"
-                  v-slot="{ errors }"
-                >
-                  <q-input
-                    label="Codice Univoco SDI"
-                    v-model="selectedCustomer.sdicode"
-                  />
-                  <span class="error">{{ errors[0] }}</span>
-                </ValidationProvider>
-
-                <ValidationProvider
-                  name="Email PEC"
-                  rules="required|email"
-                  v-slot="{ errors }"
-                >
-                  <q-input
-                    label="Email PEC"
-                    v-model="selectedCustomer.companypec"
-                    type="email"
-                  />
-                  <span class="error">{{ errors[0] }}</span>
-                </ValidationProvider>
-              </div>
-            </div>
-          </div>
-
-          <!--Step 2 - Intestatario contratto azienda/privato-->
-          <h6 v-if="isCompany && step == 2">
-            Dati amministratore azienda (obbligatori)
-          </h6>
-          <h6 v-if="!isCompany && step == 2">
-            Dati intestatario contratto (obbligatori)
-          </h6>
-          <div class="row" v-if="step == 2">
+      <ValidationObserver v-slot="observer2">
+        <!--Step 2 - Intestatario contratto azienda/privato -->
+        <div id="companyFields" v-if="isCompany && step == 2">
+          <div class="row">
             <div class="col">
               <ValidationProvider
-                name="Nome"
+                name="Denominazone Azienda"
                 immediate
-                rules="required|alpha_spaces"
-                v-slot="{ errors }"
-              >
-                <q-input label="Nome" v-model="selectedCustomer.firstname" />
-                <span class="error">{{ errors[0] }}</span>
-              </ValidationProvider>
-
-              <ValidationProvider
-                name="Cognome"
-                immediate
-                rules="required|alpha_spaces"
-                v-slot="{ errors }"
-              >
-                <q-input label="Cognome" v-model="selectedCustomer.lastname" />
-                <span class="error">{{ errors[0] }}</span>
-              </ValidationProvider>
-
-              <ValidationProvider
-                name="Codice Fiscale"
-                immediate
-                rules="required|codfis"
+                rules="required"
                 v-slot="{ errors }"
               >
                 <q-input
-                  label="Codice Fiscale"
-                  v-model="selectedCustomer.codfis"
+                  label="Denominazione Azienda"
+                  v-model="selectedCustomer.company"
                 />
                 <span class="error">{{ errors[0] }}</span>
               </ValidationProvider>
-            </div>
-          </div>
 
-          <!--Step 3 - Indirizzo erogazione servizio -->
-          <div class="row" v-if="step == 3">
-            <div class="col">
               <ValidationProvider
-                name="Indirizzo"
+                name="Indirizzo Sede Azienda"
                 immediate
                 rules="required|address"
                 v-slot="{ errors }"
               >
-                <q-input label="Indirizzo" v-model="selectedCustomer.address" />
+                <q-input
+                  label="Indirizzo Sede Azienda"
+                  v-model="selectedCustomer.companyaddress"
+                >
+                  <a>Aiuto sulla compilazione</a>
+                </q-input>
                 <span class="error">{{ errors[0] }}</span>
               </ValidationProvider>
 
               <ValidationProvider
-                name="CAP"
+                name="Telefono principale aziendale"
                 immediate
-                rules="required|alpha_num"
+                rules="required|phone"
                 v-slot="{ errors }"
               >
-                <q-input label="CAP" v-model="selectedCustomer.postalcode" />
-                <span class="error">{{ errors[0] }}</span>
-              </ValidationProvider>
-
-              <ValidationProvider
-                name="Città"
-                immediate
-                rules="required|alpha"
-                v-slot="{ errors }"
-              >
-                <q-input label="Città" v-model="selectedCustomer.city" />
-                <span class="error">{{ errors[0] }}</span>
-              </ValidationProvider>
-
-              <ValidationProvider
-                name="Stato"
-                immediate
-                rules="required|alpha"
-                v-slot="{ errors }"
-              >
-                <q-input label="Stato" v-model="selectedCustomer.state" />
+                <q-input
+                  label="Telefono principale aziendale"
+                  v-model="selectedCustomer.companyphone"
+                  type="tel"
+                />
                 <span class="error">{{ errors[0] }}</span>
               </ValidationProvider>
             </div>
           </div>
-
-          <!--Step 4 - Contatti -->
-          <div class="row" v-if="step == 4">
+          <div class="row">
             <div class="col">
               <ValidationProvider
-                name="Email"
-                immediate
+                name="Partita IVA"
+                rules="required|vatcode"
+                v-slot="{ errors }"
+              >
+                <q-input
+                  label="Partita IVA"
+                  v-model="selectedCustomer.vatcode"
+                />
+                <span class="error">{{ errors[0] }}</span>
+              </ValidationProvider>
+
+              <ValidationProvider
+                name="Codice univoco SDI"
+                rules="required|alpha_num"
+                v-slot="{ errors }"
+              >
+                <q-input
+                  label="Codice Univoco SDI"
+                  v-model="selectedCustomer.sdicode"
+                />
+                <span class="error">{{ errors[0] }}</span>
+              </ValidationProvider>
+
+              <ValidationProvider
+                name="Email PEC"
                 rules="required|email"
                 v-slot="{ errors }"
               >
                 <q-input
-                  label="Email"
-                  v-model="selectedCustomer.email"
+                  label="Email PEC"
+                  v-model="selectedCustomer.companypec"
                   type="email"
                 />
                 <span class="error">{{ errors[0] }}</span>
               </ValidationProvider>
+            </div>
+          </div>
+        </div>
 
-              <ValidationProvider
-                name="Tel. Mobile"
-                immediate
-                rules="required|phone"
-                v-slot="{ errors }"
-              >
-                <q-input
-                  label="Tel. Mobile"
-                  v-model="selectedCustomer.mobilephone"
-                  type="tel"
-                />
-                <span class="error">{{ errors[0] }}</span>
-              </ValidationProvider>
+        <!--Step 2 - Intestatario contratto azienda/privato-->
+        <h6 v-if="isCompany && step == 2">
+          Dati amministratore azienda (obbligatori)
+        </h6>
+        <h6 v-if="!isCompany && step == 2">
+          Dati intestatario contratto (obbligatori)
+        </h6>
+        <div class="row" v-if="step == 2">
+          <div class="col">
+            <ValidationProvider
+              name="Nome"
+              immediate
+              rules="required|alpha_spaces"
+              v-slot="{ errors }"
+            >
+              <q-input label="Nome" v-model="selectedCustomer.firstname" />
+              <span class="error">{{ errors[0] }}</span>
+            </ValidationProvider>
 
-              <ValidationProvider
-                name="Tel. Fisso"
-                immediate
-                rules="required|phone"
-                v-slot="{ errors }"
-              >
-                <q-input
-                  label="Tel. Fisso"
-                  v-model="selectedCustomer.phone"
-                  type="tel"
-                />
-                <span class="error">{{ errors[0] }}</span>
-              </ValidationProvider>
+            <ValidationProvider
+              name="Cognome"
+              immediate
+              rules="required|alpha_spaces"
+              v-slot="{ errors }"
+            >
+              <q-input label="Cognome" v-model="selectedCustomer.lastname" />
+              <span class="error">{{ errors[0] }}</span>
+            </ValidationProvider>
+
+            <ValidationProvider
+              name="Codice Fiscale"
+              immediate
+              rules="required|codfis"
+              v-slot="{ errors }"
+            >
+              <q-input
+                label="Codice Fiscale"
+                v-model="selectedCustomer.codfis"
+              />
+              <span class="error">{{ errors[0] }}</span>
+            </ValidationProvider>
+          </div>
+        </div>
+        <div id="buttons" class="barButtons" v-if="step == 2">
+          <q-btn class="bottomLeft" @click="prevStep">Indietro</q-btn>
+          <q-btn
+            class="bottomRight"
+            @click="nextStep"
+            :disable="observer2.invalid"
+            >Avanti
+          </q-btn>
+        </div>
+        <pre>{{ observer2.invalid }}</pre>
+      </ValidationObserver>
+
+      <ValidationObserver v-slot="observer3">
+        <!--Step 3 - Indirizzo erogazione servizio -->
+        <div class="row" v-if="step == 3">
+          <div class="col">
+            <ValidationProvider
+              name="Indirizzo"
+              immediate
+              rules="required|address"
+              v-slot="{ errors }"
+            >
+              <q-input label="Indirizzo" v-model="selectedCustomer.address" />
+              <span class="error">{{ errors[0] }}</span>
+            </ValidationProvider>
+
+            <ValidationProvider
+              name="CAP"
+              immediate
+              rules="required|alpha_num"
+              v-slot="{ errors }"
+            >
+              <q-input label="CAP" v-model="selectedCustomer.postalcode" />
+              <span class="error">{{ errors[0] }}</span>
+            </ValidationProvider>
+
+            <ValidationProvider
+              name="Città"
+              immediate
+              rules="required|alpha"
+              v-slot="{ errors }"
+            >
+              <q-input label="Città" v-model="selectedCustomer.city" />
+              <span class="error">{{ errors[0] }}</span>
+            </ValidationProvider>
+
+            <ValidationProvider
+              name="Stato"
+              immediate
+              rules="required|alpha"
+              v-slot="{ errors }"
+            >
+              <q-input label="Stato" v-model="selectedCustomer.state" />
+              <span class="error">{{ errors[0] }}</span>
+            </ValidationProvider>
+          </div>
+        </div>
+
+        <div id="buttons" class="barButtons" v-if="step == 3">
+          <q-btn class="bottomLeft" @click="prevStep">Indietro</q-btn>
+          <q-btn
+            class="bottomRight"
+            @click="nextStep"
+            :disabled="observer3.invalid"
+            >Avanti</q-btn
+          >
+        </div>
+      </ValidationObserver>
+
+      <ValidationObserver v-slot="observer4">
+        <!--Step 4 - Contatti -->
+        <div class="row" v-if="step == 4">
+          <div class="col">
+            <ValidationProvider
+              name="Email"
+              immediate
+              rules="required|email"
+              v-slot="{ errors }"
+            >
+              <q-input
+                label="Email"
+                v-model="selectedCustomer.email"
+                type="email"
+              />
+              <span class="error">{{ errors[0] }}</span>
+            </ValidationProvider>
+
+            <ValidationProvider
+              name="Tel. Mobile"
+              immediate
+              rules="required|phone"
+              v-slot="{ errors }"
+            >
+              <q-input
+                label="Tel. Mobile"
+                v-model="selectedCustomer.mobilephone"
+                type="tel"
+              />
+              <span class="error">{{ errors[0] }}</span>
+            </ValidationProvider>
+
+            <ValidationProvider
+              name="Tel. Fisso"
+              immediate
+              rules="required|phone"
+              v-slot="{ errors }"
+            >
+              <q-input
+                label="Tel. Fisso"
+                v-model="selectedCustomer.phone"
+                type="tel"
+              />
+              <span class="error">{{ errors[0] }}</span>
+            </ValidationProvider>
+          </div>
+        </div>
+
+        <div id="buttons" class="barButtons" v-if="step == 4">
+          <q-btn class="bottomLeft" @click="prevStep">Indietro</q-btn>
+          <q-btn
+            class="bottomRight"
+            @click="nextStep"
+            :disabled="observer4.invalid"
+            >Avanti</q-btn
+          >
+        </div>
+      </ValidationObserver>
+
+      <ValidationObserver v-slot="observer5">
+        <!--Step 5 - Configurazione contratto -->
+        <div class="row" v-if="step == 5">
+          <div class="row" v-if="step == 5" style="width: 100%">
+            <div class="col">
+              <q-select
+                filled
+                label="Categoria"
+                @input="changeCategory"
+                :options="serviceCategories"
+                v-model="selectedCategory"
+              />
+              <q-table
+                style="width: 100%"
+                title="Servizi"
+                :data="serviceTemplates"
+                :columns="columnsTableServiceTemplates"
+                row-key="id"
+                :selected-rows-label="getSelectedServiceTemplate"
+                selection="multiple"
+                :selected.sync="selectedServicesTemplate"
+              />
             </div>
           </div>
 
           <!--Step 5 - Configurazione contratto -->
-          <div class="row" v-if="step == 5">
-            <div class="row" v-if="step == 5" style="width: 100%">
-              <div class="col">
-                <q-select
-                  filled
-                  label="Categoria"
-                  @input="changeCategory"
-                  :options="serviceCategories"
-                  v-model="selectedCategory"
+          <div class="row" v-if="step == 5" style="width: 100%">
+            <div class="col">
+              <ValidationProvider
+                name="Indirizzo esecuzione contratto"
+                immediate
+                rules="required|address"
+                v-slot="{ errors }"
+              >
+                <q-input
+                  label="Indirizzo esecuzione contratto"
+                  v-model="selectedContract.address"
                 />
-                <q-table
-                  style="width: 100%"
-                  title="Servizi"
-                  :data="serviceTemplates"
-                  :columns="columnsTableServiceTemplates"
-                  row-key="id"
-                  :selected-rows-label="getSelectedServiceTemplate"
-                  selection="multiple"
-                  :selected.sync="selectedServicesTemplate"
-                />
-              </div>
-            </div>
+                <span class="error">{{ errors[0] }}</span>
+              </ValidationProvider>
 
-            <!--Step 5 - Configurazione contratto -->
-            <div class="row" v-if="step == 5" style="width: 100%">
-              <div class="col">
-                <ValidationProvider
-                  name="Indirizzo esecuzione contratto"
-                  immediate
-                  rules="required|address"
-                  v-slot="{ errors }"
-                >
-                  <q-input
-                    label="Indirizzo esecuzione contratto"
-                    v-model="selectedContract.address"
-                  />
-                  <span class="error">{{ errors[0] }}</span>
-                </ValidationProvider>
-
-                <div class="row" style="padding-top: 100px">
-                  <div class="col">
-                    Importo iva esclusa: {{ valueContract.price }}
-                  </div>
-                  <div class="col">Importo iva: {{ valueContract.vat }}</div>
-                  <div class="col">
-                    Importo totale: {{ valueContract.total }}
-                  </div>
+              <div class="row" style="padding-top: 100px">
+                <div class="col">
+                  Importo iva esclusa: {{ valueContract.price }}
                 </div>
+                <div class="col">Importo iva: {{ valueContract.vat }}</div>
+                <div class="col">Importo totale: {{ valueContract.total }}</div>
               </div>
             </div>
           </div>
+        </div>
 
-          <!--Step 6 identity documents -->
-          <div class="row" v-if="step == 6 || step == 7">
-            <div class="col">
-              <q-btn-toggle
-                v-model="fromCamera"
-                toggle-color="primary"
-                no-caps
-                rounded
-                unelevated
-                :options="[
-                  { label: 'Camera', value: true },
-                  { label: 'File', value: false }
-                ]"
-              />
-            </div>
-          </div>
-
-          <!--Step 6 identity card -->
-          <div class="row" v-if="step == 6" stype="with: 100%">
-            <div class="col">
-              <q-btn
-                v-if="fromCamera"
-                color="primary"
-                style="width: 300px"
-                label="Carta identità fronte (camera)"
-                @click="captureCiFront"
-              />
-              <q-uploader
-                v-if="!fromCamera"
-                auto-upload
-                :factory="uploadCiFront"
-                max-file-size="2048000"
-                accept=".jpg"
-                style="max-width: 300px"
-                label="Acquisizione da file (solo jpg)"
-              />
-            </div>
-            <div class="col">
-              <q-btn
-                v-if="fromCamera"
-                color="primary"
-                style="width: 300px"
-                label="Carta identità retro (camera)"
-                @click="captureCiBack"
-              />
-              <q-uploader
-                v-if="!fromCamera"
-                auto-upload
-                :factory="uploadCiBack"
-                accept=".jpg"
-                max-file-size="2048000"
-                style="max-width: 300px"
-                label="Acquisizione da file (solo jpg)"
-              />
-            </div>
-          </div>
-          <div class="row" v-if="step == 6" stype="with: 100%">
-            <div class="col">
-              <img :src="imageCiFront" style="width: 300px" />
-              <img :src="imageCiBack" style="width: 300px" />
-            </div>
-          </div>
-
-          <!--Step 7 identity ficalcode/health card -->
-          <div class="row" v-if="step == 7" stype="with: 100%">
-            <div class="col">
-              <q-btn
-                v-if="fromCamera"
-                color="primary"
-                style="width: 300px"
-                label="Codice fiscale fronte (camera)"
-                @click="captureCfFront"
-              />
-              <q-uploader
-                v-if="!fromCamera"
-                auto-upload
-                :factory="uploadCfFront"
-                max-file-size="2048000"
-                accept=".jpg"
-                style="max-width: 300px"
-                label="Acquisizione da file (solo jpg)"
-              />
-            </div>
-            <div class="col">
-              <q-btn
-                v-if="fromCamera"
-                color="primary"
-                style="width: 300px"
-                label="Codice fiscale retro (camera)"
-                @click="captureCfBack"
-              />
-              <q-uploader
-                v-if="!fromCamera"
-                auto-upload
-                :factory="uploadCfBack"
-                max-file-size="2048000"
-                accept=".jpg"
-                style="max-width: 300px"
-                label="Acquisizione da file (solo jpg)"
-              />
-            </div>
-          </div>
-          <div class="row" v-if="step == 7" stype="with: 100%">
-            <div class="col">
-              <img :src="imageCfFront" style="width: 300px" />
-              <img :src="imageCfBack" style="width: 300px" />
-            </div>
-          </div>
-
-          <!-- Step 8 final check -->
-          <div class="row" v-if="step == 8">
-            <div class="col">
-              <pdf :src="fileFinalDocument"></pdf>
-            </div>
-          </div>
-          <div class="row" v-if="step == 8">
-            <div class="col">
-              <q-btn
-                color="primary"
-                icon="mail"
-                label="Invia per email al cliente"
-                @click="sendFinalDocumentByEmail"
-              />
-              <q-btn
-                color="primary"
-                icon="document"
-                label="Visualizza"
-                @click="openFinalDocument"
-              />
-            </div>
-          </div>
-        </q-form>
+        <div id="buttons" class="barButtons" v-if="step == 5">
+          <q-btn class="bottomLeft" @click="prevStep">Indietro</q-btn>
+          <q-btn
+            class="bottomRight"
+            @click="nextStep"
+            :disabled="observer5.invalid"
+            >Avanti</q-btn
+          >
+        </div>
       </ValidationObserver>
-    </div>
-    <div id="buttons" class="barButtons">
-      <q-btn class="bottomLeft" @click="prevStep">Indietro</q-btn>
-      <q-btn class="bottomRight" @click="nextStep">Avanti</q-btn>
+
+      <ValidationObserver v-slot="observer6">
+        <!--Step 6 identity card -->
+        <div class="row" v-if="step == 6" stype="with: 100%">
+          <div class="col">
+            <q-btn
+              v-if="fromCamera"
+              color="primary"
+              style="width: 300px"
+              label="Carta identità fronte (camera)"
+              @click="captureCiFront"
+            />
+            <q-uploader
+              v-if="!fromCamera"
+              auto-upload
+              :factory="uploadCiFront"
+              max-file-size="2048000"
+              accept=".jpg"
+              style="max-width: 300px"
+              label="Acquisizione da file (solo jpg)"
+            />
+          </div>
+          <div class="col">
+            <q-btn
+              v-if="fromCamera"
+              color="primary"
+              style="width: 300px"
+              label="Carta identità retro (camera)"
+              @click="captureCiBack"
+            />
+            <q-uploader
+              v-if="!fromCamera"
+              auto-upload
+              :factory="uploadCiBack"
+              accept=".jpg"
+              max-file-size="2048000"
+              style="max-width: 300px"
+              label="Acquisizione da file (solo jpg)"
+            />
+          </div>
+        </div>
+        <div class="row" v-if="step == 6" stype="with: 100%">
+          <div class="col">
+            <img :src="imageCiFront" style="width: 300px" />
+            <img :src="imageCiBack" style="width: 300px" />
+          </div>
+        </div>
+
+        <div id="buttons" class="barButtons" v-if="step == 6">
+          <q-btn class="bottomLeft" @click="prevStep">Indietro</q-btn>
+          <q-btn
+            class="bottomRight"
+            @click="nextStep"
+            :disabled="observer6.invalid"
+            >Avanti</q-btn
+          >
+        </div>
+      </ValidationObserver>
+
+      <ValidationObserver v-slot="observer7">
+        <!--Step 7 identity ficalcode/health card -->
+        <div class="row" v-if="step == 7" stype="with: 100%">
+          <div class="col">
+            <q-btn
+              v-if="fromCamera"
+              color="primary"
+              style="width: 300px"
+              label="Codice fiscale fronte (camera)"
+              @click="captureCfFront"
+            />
+            <q-uploader
+              v-if="!fromCamera"
+              auto-upload
+              :factory="uploadCfFront"
+              max-file-size="2048000"
+              accept=".jpg"
+              style="max-width: 300px"
+              label="Acquisizione da file (solo jpg)"
+            />
+          </div>
+          <div class="col">
+            <q-btn
+              v-if="fromCamera"
+              color="primary"
+              style="width: 300px"
+              label="Codice fiscale retro (camera)"
+              @click="captureCfBack"
+            />
+            <q-uploader
+              v-if="!fromCamera"
+              auto-upload
+              :factory="uploadCfBack"
+              max-file-size="2048000"
+              accept=".jpg"
+              style="max-width: 300px"
+              label="Acquisizione da file (solo jpg)"
+            />
+          </div>
+        </div>
+        <div class="row" v-if="step == 7" stype="with: 100%">
+          <div class="col">
+            <img :src="imageCfFront" style="width: 300px" />
+            <img :src="imageCfBack" style="width: 300px" />
+          </div>
+        </div>
+
+        <div id="buttons" class="barButtons" v-if="step == 7">
+          <q-btn class="bottomLeft" @click="prevStep">Indietro</q-btn>
+          <q-btn
+            class="bottomRight"
+            @click="nextStep"
+            :disabled="observer7.invalid"
+            >Avanti</q-btn
+          >
+        </div>
+      </ValidationObserver>
+
+      <ValidationObserver v-slot="observer8">
+        <!-- Step 8 final check -->
+        <div class="row" v-if="step == 8">
+          <div class="col">
+            <pdf :src="fileFinalDocument"></pdf>
+          </div>
+        </div>
+        <div class="row" v-if="step == 8">
+          <div class="col">
+            <q-btn
+              color="primary"
+              icon="mail"
+              label="Invia per email al cliente"
+              @click="sendFinalDocumentByEmail"
+            />
+            <q-btn
+              color="primary"
+              icon="document"
+              label="Visualizza"
+              @click="openFinalDocument"
+            />
+          </div>
+        </div>
+
+        <div id="buttons" class="barButtons" v-if="step == 8">
+          <q-btn class="bottomLeft" @click="prevStep">Indietro</q-btn>
+          <q-btn
+            class="bottomRight"
+            @click="nextStep"
+            :disabled="observer8.invalid"
+            >Avanti</q-btn
+          >
+        </div>
+      </ValidationObserver>
+      <!--/q-form-->
     </div>
 
     <q-dialog
@@ -575,6 +640,9 @@ export default {
   },
   methods: {
     nextStep() {
+
+
+
       if(this.step<this.stepMax) this.step++;
       if(this.step==8) this.generateFinalDocument();
     },
@@ -769,7 +837,7 @@ export default {
   computed: mapState({
     user: 'user',
     customer: 'customer',
-    contract: 'contract',
+    contract: 'contract'
     }),
     components: {
       ValidationProvider,
