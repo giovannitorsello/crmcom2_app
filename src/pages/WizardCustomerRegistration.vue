@@ -23,11 +23,10 @@
     <h6 v-if="step == 7">
       <b>Configurazione contratto:</b>Codice fiscale cliente
     </h6>
-    <h6 v-if="step == 8"><b>Configurazione contratto:</b>Controlli finali</h6>
+    <h6 v-if="step == 8"><b>Configurazione contratto:</b>Dati finali</h6>
 
     <div id="dataFormDiv" style="padding-bottom: 100px;">
-      <!--q-form ref="customerFrom" class="q-gutter-md"-->
-      <!--Step 1 - scelta tipo cliente -->
+      
       <ValidationObserver>
         <div class="row" v-if="step == 1">
           <div class="col-auto">
@@ -378,6 +377,21 @@
         <!--Step 6 identity card -->
         <div class="row" v-if="step == 6" stype="with: 100%">
           <div class="col">
+            <ValidationProvider
+              name="Numero documento"
+              immediate
+              rules="required"
+              v-slot="{ errors }"
+            >
+              <q-input
+                label="Numero documento"
+                v-model="selectedCustomer.numci"
+                type="tel"
+              />
+              <span class="error">{{ errors[0] }}</span>
+            </ValidationProvider>
+          </div>
+          <div class="col">
             <q-btn
               v-if="fromCamera"
               color="primary"
@@ -435,6 +449,21 @@
       <ValidationObserver v-slot="observer7">
         <!--Step 7 identity ficalcode/health card -->
         <div class="row" v-if="step == 7" stype="with: 100%">
+          <div class="col">
+            <ValidationProvider
+              name="Codice fiscale"
+              immediate
+              rules="required|codfis"
+              v-slot="{ errors }"
+            >
+              <q-input
+                label="Codice fiscale"
+                v-model="selectedCustomer.codfis"
+                type="codfis"
+              />
+              <span class="error">{{ errors[0] }}</span>
+            </ValidationProvider>
+          </div>
           <div class="col">
             <q-btn
               v-if="fromCamera"
@@ -524,7 +553,7 @@
           >
         </div>
       </ValidationObserver>
-      <!--/q-form-->
+      
     </div>
 
     <q-dialog
@@ -640,9 +669,6 @@ export default {
   },
   methods: {
     nextStep() {
-
-
-
       if(this.step<this.stepMax) this.step++;
       if(this.step==8) this.generateFinalDocument();
     },

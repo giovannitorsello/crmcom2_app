@@ -6,6 +6,9 @@
 // Configuration for your app
 // https://quasar.dev/quasar-cli/quasar-conf-js
 /* eslint-env node */
+const DotEnv = require('dotenv');
+const webpack = require('webpack');
+const envparser = require('./src/config/envparser.js');
 
 module.exports = function(/* ctx */) {
   return {
@@ -39,6 +42,7 @@ module.exports = function(/* ctx */) {
 
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
     build: {
+      env: require('dotenv').config().parsed,
       vueRouterMode: "hash", // available values: 'hash', 'history'
       devtool: "source-map",
       scopeHoisting: true,
@@ -74,9 +78,9 @@ module.exports = function(/* ctx */) {
 
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-devServer
     devServer: {
-      host: "127.0.0.1",
+      host: process.env.APP_HOST,
       https: false,
-      port: 8080,
+      port: process.env.APP_PORT,
       vueDevtools: false,
       open: false
     },
