@@ -32,6 +32,7 @@
         <q-tabs v-model="tab" class="text-teal">
           <q-tab name="general" icon="article" label="Generale" />
           <q-tab name="services" icon="euro_symbol" label="Servizi" />
+          <q-tab name="invoice" icon="receipt" label="Fatturazione" />
           <q-tab name="devices" icon="router" label="Dispositivi" />
         </q-tabs>
         <q-separator />
@@ -190,7 +191,60 @@
               </q-table>
             </div>
           </q-tab-panel>
-
+          <q-tab-panel name="invoice">
+            <div class="row">
+              <div class="col">
+                <ValidationProvider
+                  name="Indirizzo completo di fatturazione"
+                  immediate
+                  rules="required|address"
+                  v-slot="{ errors }"
+                >
+                  <q-input
+                    label="Indirizzo completo di fatturazione"
+                    v-model="selectedContract.invoiceAddress"
+                  />
+                  <span class="error">{{ errors[0] }}</span>
+                </ValidationProvider>
+                <ValidationProvider
+                  name="Città indirizzo fatturazione"
+                  immediate
+                  rules="required"
+                  v-slot="{ errors }"
+                >
+                  <q-input
+                    label="Città indirizzo fatturazione"
+                    v-model="selectedContract.invoiceCity"
+                  />
+                  <span class="error">{{ errors[0] }}</span>
+                </ValidationProvider>
+                <ValidationProvider
+                  name="CAP indirizzo fatturazione"
+                  immediate
+                  rules="required"
+                  v-slot="{ errors }"
+                >
+                  <q-input
+                    label="CAP indirizzo fatturazione"
+                    v-model="selectedContract.invoiceCAP"
+                  />
+                  <span class="error">{{ errors[0] }}</span>
+                </ValidationProvider>
+                <ValidationProvider
+                  name="Provincia indirizzo fatturazione"
+                  immediate
+                  rules="required"
+                  v-slot="{ errors }"
+                >
+                  <q-input
+                    label="Provincia indirizzo fatturazione"
+                    v-model="selectedContract.invoiceProvince"
+                  />
+                  <span class="error">{{ errors[0] }}</span>
+                </ValidationProvider>
+              </div>
+            </div>
+          </q-tab-panel>
           <q-tab-panel name="devices">
             <div v-if="devices">
               <q-table

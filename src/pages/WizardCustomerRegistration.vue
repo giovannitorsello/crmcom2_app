@@ -26,9 +26,9 @@
     <h6 v-if="step == 8"><b>Configurazione contratto:</b>Dati finali</h6>
 
     <div id="dataFormDiv" style="padding-bottom: 100px;">
-      
       <ValidationObserver>
         <div class="row" v-if="step == 1">
+          <Signature></Signature>
           <div class="col-auto">
             <q-btn-toggle
               v-model="isCompany"
@@ -312,8 +312,82 @@
 
       <ValidationObserver v-slot="observer5">
         <!--Step 5 - Configurazione contratto -->
-        <div class="row" v-if="step == 5">
-          <div class="row" v-if="step == 5" style="width: 100%">
+        <div v-if="step == 5">
+
+          <div class="row" style="width: 100%">
+            <div class="col">
+              <ValidationProvider
+                name="Indirizzo esecuzione contratto"
+                immediate
+                rules="required|address"
+                v-slot="{ errors }"
+              >
+                <q-input
+                  label="Indirizzo esecuzione contratto"
+                  v-model="selectedContract.address"
+                />
+                <span class="error">{{ errors[0] }}</span>
+              </ValidationProvider>
+            </div>
+            <div class="col">
+              <ValidationProvider
+                name="Indirizzo fatturazione contratto"
+                immediate
+                rules="required|address"
+                v-slot="{ errors }"
+              >
+                <q-input
+                  label="Indirizzo fatturazione contratto"
+                  v-model="selectedContract.invoiceAddress"
+                />
+                <span class="error">{{ errors[0] }}</span>
+              </ValidationProvider>
+            </div>         
+            <div class="col">
+              <ValidationProvider
+                name="Città fatturazione contratto"
+                immediate
+                rules="required"
+                v-slot="{ errors }"
+              >
+                <q-input
+                  label="Città fatturazione contratto"
+                  v-model="selectedContract.invoiceCity"
+                />
+                <span class="error">{{ errors[0] }}</span>
+              </ValidationProvider>
+            </div>
+            <div class="col">
+              <ValidationProvider
+                name="CAP fatturazione contratto"
+                immediate
+                rules="required"
+                v-slot="{ errors }"
+              >
+                <q-input
+                  label="CAP fatturazione contratto"
+                  v-model="selectedContract.invoiceCAP"
+                />
+                <span class="error">{{ errors[0] }}</span>
+              </ValidationProvider>
+            </div>
+            <div class="col">            
+              <ValidationProvider
+                name="Provincia fatturazione"
+                immediate
+                rules="required"
+                v-slot="{ errors }"
+              >
+                <q-input
+                  label="Provincia fatturazione"
+                  v-model="selectedContract.invoiceProvince"
+                />
+                <span class="error">{{ errors[0] }}</span>
+              </ValidationProvider>
+            </div>
+          </div>
+
+          <div class="row" style="width: 100%">
             <div class="col">
               <q-select
                 filled
@@ -328,38 +402,26 @@
                 :data="serviceTemplates"
                 :columns="columnsTableServiceTemplates"
                 row-key="id"
-                :selected-rows-label="getSelectedServiceTemplate"
                 selection="multiple"
                 :selected.sync="selectedServicesTemplate"
+                @update:selected="getValueSelectedServices"
               />
             </div>
           </div>
 
-          <!--Step 5 - Configurazione contratto -->
-          <div class="row" v-if="step == 5" style="width: 100%">
+          <div class="row">
             <div class="col">
-              <ValidationProvider
-                name="Indirizzo esecuzione contratto"
-                immediate
-                rules="required|address"
-                v-slot="{ errors }"
-              >
-                <q-input
-                  label="Indirizzo esecuzione contratto"
-                  v-model="selectedContract.address"
-                />
-                <span class="error">{{ errors[0] }}</span>
-              </ValidationProvider>
-
-              <div class="row" style="padding-top: 100px">
-                <div class="col">
-                  Importo iva esclusa: {{ valueContract.price }}
-                </div>
-                <div class="col">Importo iva: {{ valueContract.vat }}</div>
-                <div class="col">Importo totale: {{ valueContract.total }}</div>
-              </div>
+              Costi di attivazione iva esclusa:
+              {{ valueSelectedServices.activationPrice }}
             </div>
           </div>
+
+          <div class="row">
+            <div class="col">Importo iva esclusa: {{ valueSelectedServices.price }}</div>
+            <div class="col">Importo iva: {{ valueSelectedServices.vat }}</div>
+            <div class="col">Importo totale: {{ valueSelectedServices.total }}</div>
+          </div>
+
         </div>
 
         <div id="buttons" class="barButtons" v-if="step == 5">
@@ -523,7 +585,10 @@
         <!-- Step 8 final check -->
         <div class="row" v-if="step == 8">
           <div class="col">
-            <pdf :src="fileFinalDocument"></pdf>
+            <pdf :src="fileFinalDocument" 
+            style="display: inline-block; width: 20%" 
+            v-on:click="pagePdf++"
+            :page="pagePdf"></pdf>            
           </div>
         </div>
         <div class="row" v-if="step == 8">
@@ -553,7 +618,6 @@
           >
         </div>
       </ValidationObserver>
-      
     </div>
 
     <q-dialog
@@ -603,6 +667,7 @@ import { ValidationProvider, ValidationObserver, extend, localize } from 'vee-va
 import validator from "./validator"
 import { Plugins, CameraResultType } from '@capacitor/core'
 import pdf from 'vue-pdf'
+import Signature from "../components/Signature.vue"
 const { Camera } = Plugins
 
 export default {
@@ -611,16 +676,17 @@ export default {
         step: 1,
         stepMax: 8,
         fileFinalDocument: "",
+        pagePdf: 1,
         fromCamera: true,
         helpAddress: false,
         isCompany: false,
         serviceCategories: [],
         selectedCategory: {label: "Internet", value: "Internet", icon: ''},
-        serviceTemplates: {},
+        serviceTemplates: [],
         selectedCustomer: {},
         selectedContract: {},
-        valueContract: {},
         selectedServicesTemplate: [],
+        valueSelectedServices: {activationPrice: 0.0, price :0.0, vat: 0.0, total: 0.0},
         columnsTableServiceTemplates: [
           { name: "actions", label: "Azioni" },
           {
@@ -639,6 +705,12 @@ export default {
             name: "unit",
             label: "Unità",
             field: "unit",
+            sortable: true
+          },
+          {
+            name: "activationPrice",
+            label: "Costo attivazione",
+            field: "activationPrice",
             sortable: true
           },
           {
@@ -677,6 +749,13 @@ export default {
     },
     generateFinalDocument() {
       this.selectedCustomer.uuid=this.uuid;
+      //Compute contract data
+      if(this.selectedContract)
+      {
+        if(!this.selectedContract.objData) this.selectedContract.objData={};
+        this.selectedContract.objData.valueSelectedServices=this.valueSelectedServices;
+      }
+
       this.$axios.post('/adminarea/registration/generate_final_document', {
           customer: this.selectedCustomer,
           contract: this.selectedContract
@@ -716,6 +795,29 @@ export default {
               this.makeToast("Si è verificato un errore");
           });
     },
+    getValueSelectedServices: function() {
+      var price=0, vat=0, total=0, activationPrice=0;
+      this.valueSelectedServices={price: 0, vat: 0, total: 0};
+        this.selectedServicesTemplate.forEach((element, index, array) => {
+          activationPrice+=element.activationPrice;
+          price+=element.price;
+          vat+=(element.price*element.vat)/100;
+          total=price+vat;
+
+          if(index===array.length-1) {
+            const formatter = new Intl.NumberFormat('it-IT', {
+            style: 'currency',
+            currency: 'EUR',
+            minimumFractionDigits: 2
+            })
+            price=formatter.format(price);
+            vat=formatter.format(vat);
+            total=formatter.format(total);
+            activationPrice=formatter.format(activationPrice);
+            this.valueSelectedServices={"activationPrice": activationPrice, "price": price, "vat": vat, "total": total};
+          }
+        });
+      },
     changeCategory: function() {
       const store=this.$store;
       this.$axios.post('/adminarea/serviceTemplate/getByCategory', {category: this.selectedCategory})
@@ -755,22 +857,6 @@ export default {
             .catch(error => {
                 console.log(error);
             });
-    },
-    getSelectedServiceTemplate() {
-        if(this.selectedServicesTemplate.length) {
-        var price=0, vat=0, total=0;
-        this.selectedServicesTemplate.forEach((element, index, array) => {
-          console.log(element)
-          price+=element.price;
-          vat+=(element.price*element.vat)/100;
-          total=price+vat;
-
-          if(index===this.selectedServicesTemplate-1) {
-            this.valueContract={"price": price, "vat": vat, "total": total};
-          }
-        });
-      }
-      this.valueContract={price: 0, vat: 0, total: 0};
     },
     async captureCiFront () {
       const image = await Camera.getPhoto({width: 600, height: 350, quality: 100, allowEditing: true, resultType: CameraResultType.base64});
@@ -863,12 +949,13 @@ export default {
   computed: mapState({
     user: 'user',
     customer: 'customer',
-    contract: 'contract'
+    contract: 'contract',
     }),
     components: {
       ValidationProvider,
       ValidationObserver,
-      pdf
+      pdf,
+      Signature
     },
     beforeRouteEnter(to, from, next) {
     var currentUser = Store.state.user;
@@ -879,7 +966,7 @@ export default {
         (currentUser.role === "installer")  ||
         (currentUser.role === "seller"))    next();
     else next("/Login");
-  }
+    }
 }
 </script>
 

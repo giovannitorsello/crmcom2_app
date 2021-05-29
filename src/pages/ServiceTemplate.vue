@@ -81,6 +81,17 @@
         <div class="row">
           <div class="col">
             <ValidationProvider
+              name="Costo di attivazione"
+              immediate
+              rules="required|decimal"
+              v-slot="{ errors }"
+            >
+              <q-input label="Costo di attivazione" v-model="selectedServiceTemplate.activationPrice" />
+              <span class="error">{{ errors[0] }}</span>
+            </ValidationProvider>
+          </div>
+          <div class="col">
+            <ValidationProvider
               name="Prezzo"
               immediate
               rules="required|decimal"

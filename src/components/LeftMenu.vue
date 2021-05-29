@@ -84,6 +84,12 @@ export default {
           name: "Registrazione cliente",
           route: "/WizardCustomerRegistration",
           type: "generic"
+        },
+        {
+          id: 11,
+          name: "Contratti",
+          route: "/Contract",
+          type: "generic"
         }
       ];
     }
