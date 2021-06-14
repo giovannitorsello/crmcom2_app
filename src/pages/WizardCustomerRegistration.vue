@@ -28,7 +28,7 @@
     <div id="dataFormDiv" style="padding-bottom: 100px;">
       <ValidationObserver>
         <div class="row" v-if="step == 1">
-          <Signature></Signature>
+          <Signature :uuid="uuid"></Signature>
           <div class="col-auto">
             <q-btn-toggle
               v-model="isCompany"

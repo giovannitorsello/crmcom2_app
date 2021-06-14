@@ -9,6 +9,9 @@
         style="border:1px solid #000000;"
       ></canvas>
     </div>
+    <q-btn color="red" @click="deleteCanvasSignature" label="Cancella" />
+    <q-btn color="teal" @click="saveCanvasSignature" label="Salva" />
+
     <p>{{ xpos }} -- {{ ypos }}</p>
     <p>{{ touchForce }} -- {{ azimuthAngle }}</p>
   </div>
@@ -20,6 +23,7 @@ import { Store } from "../store";
 
 export default {
   name: "Signature",
+  props: ['uuid'],
   data() {
     return {
       xpos: 0,
@@ -30,19 +34,20 @@ export default {
       pressure: 0,
       azimuthAngle: 0,
       touchForce: 0,
-      event: null
+      event: null,
+      canvas: null
     };
   },
   mounted() {
     const componentSignature = this;
-    var canvas = this.$refs.signatureCanvas;
-    var ctx = canvas.getContext("2d");
+    this.canvas = this.$refs.signatureCanvas;
+    var ctx = this.canvas.getContext("2d");
     var sketch = this.$refs.canvasContainer;
     var sketch_style = getComputedStyle(sketch);
-    canvas.width = parseInt(sketch_style.getPropertyValue("width"));
-    canvas.height = parseInt(sketch_style.getPropertyValue("height"));
+    this.canvas.width = parseInt(sketch_style.getPropertyValue("width"));
+    this.canvas.height = parseInt(sketch_style.getPropertyValue("height"));
 
-    canvas.addEventListener(
+    this.canvas.addEventListener(
       "touchmove",
       function(e) {
         e.preventDefault();
@@ -72,7 +77,7 @@ export default {
       false
     );
 
-    canvas.addEventListener(
+    this.canvas.addEventListener(
       "touchstart",
       function(e) {
         e.preventDefault();
@@ -110,7 +115,30 @@ export default {
     ctx.lineCap = "round";
     ctx.strokeStyle = rgb(0, 0, 255);
   },
-  methods: {}
+  methods: {
+    deleteCanvasSignature() {
+      var ctx = this.canvas.getContext("2d");
+      ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    },
+    saveCanvasSignature() {
+      var component=this;
+      var canvasData = this.canvas.toDataURL("image/png");
+      this.$axios.post('/adminarea/registration/signature', 
+      {
+        uuid: this.uuid,
+        signatureData: canvasData
+      })
+      .then(function(res) {
+        component.makeToast(res.data.msg, res.data.status);        
+      });
+    },
+    makeToast(string, type) {
+      if(type==="OK")
+        this.$q.notify({color: 'green-4', textColor: 'white', icon: 'info', message: string});
+      else
+        this.$q.notify({color: 'red-4', textColor: 'white', icon: 'error', message: string});
+    }
+  }
 };
 </script>
 
